@@ -211,12 +211,7 @@ CreationDataFrame <- function(euroleague) {
     select(-jjj)
   
   rm(result)
-  
-  
 
-  
- 
-  
   return(stat_per_game)
 }
 
