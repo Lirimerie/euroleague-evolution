@@ -135,6 +135,64 @@ team_stats_df <- team_stats_df %>%
          -TwoSA,-TwoSB,-TwoFA,-TwoFB,-FTSA,-FTSB,-FTFA,-FTFB,-LUSA,-LUSB,-LUFA,
          -LUFB,-DunkA,-DunkB,-Off_RebA,-Off_RebB,-Def_RebA,-Def_RebB,-Team_Type)
 
+team_stats_df <- team_stats_df|>
+  mutate(Team = recode(Team,
+                       "ANADOLU EFES"="ANADOLU EFES ISTANBUL",
+                       "ARIS TT BANK" = "ARIS THESSALONIKI",
+                       "CIBONA" = "KK CIBONA",
+                       "MACCABI TEL AVIV" = "MACCABI ELITE TEL AVIV",
+                       "MACCABI FOX TEL AVIV" = "MACCABI ELITE TEL AVIV",
+                       "MACCABI ELECTRA TEL AVIV" = "MACCABI ELITE TEL AVIV",
+                       "MONTEPASCHI" = "MONTEPASCHI SIENA",
+                       "OLYMPIACOS PIRAEUS" = "OLYMPIACOS PIRAEUS B.C.",
+                       "ZALGIRIS" = "ZALGIRIS KAUNAS",
+                       "ASSECO PROKOM" = "ASSECO PROKOM GDYNIA",
+                       "BASKONIA" = "BASKONIA VITORIA GASTEIZ",
+                       "TD SYSTEMS BASKONIA VITORIA-GASTEIZ" = "BASKONIA VITORIA GASTEIZ",
+                       "BC KHIMKI" = "BC KHIMKI MOSCOW REGION",
+                       "UNION OLIMPIJA" = "UNION OLIMPIJA LJUBLJANA",
+                       "UNICS" = 	"UNICS KAZAN",
+                       "UNICAJA" = "UNICAJA MALAGA",
+                       "AXA FC BARCELONA" = "FC BARCELONA",
+                       "BELGACOM SPIROU BASKET" = "BELGACOM SPIROU",
+                       "BILBAO BASKET" = "BIZKAIA BILBAO BASKET",
+                       "BROSE BASKETS" = "BROSE BASKETS BAMBERG",
+                       "BROSE BAMBERG" = "BROSE BASKETS BAMBERG",
+                       "SLUC NANCY BASKET" = "SLUC NANCY",
+                       "BASKONIA VITORIA GASTEIZ" = "CAJA LABORAL BASKONIA",
+                       "CAJA LABORAL VITORIA" = "CAJA LABORAL BASKONIA",
+                       "CRVENA ZVEZDA TELEKOM BELGRADE" = "CRVENA ZVEZDA MTS BELGRADE",
+                       "DARUSSAFAKA TEKFEN ISTANBUL" = "DARUSSAFAKA DOGUS ISTANBUL",
+                       "EA7 EMPORIO ARMANI MILANO" = "AX ARMANI EXCHANGE MILAN",
+                       "EA7 EMPORIO ARMANI MILAN" = "AX ARMANI EXCHANGE MILAN",
+                       "MILANO" = "AX ARMANI EXCHANGE MILAN",
+                       "AX ARMANI EXCHANGE OLIMPIA MILAN" = "AX ARMANI EXCHANGE OLIMPIA M",
+                       "FC BARCELONA REGAL" = "FC BARCELONA",
+                       "FC BARCELONA LASSA REGAL" = "FC BARCELONA",
+                       "FENERBAHCE DOGUS ISTANBUL" = "FENERBAHCE ISTANBUL",
+                       "FENERBAHCE BEKO ISTANBUL" = "FENERBAHCE ISTANBUL",
+                       "FENERBAHCE ULKER ISTANBUL" = "FENERBAHCE ISTANBUL",
+                       "FB DOGUS" = "FENERBAHCE ISTANBUL",
+                       "LABORAL KUTXA VITORIA GASTEIZ" = "LABORAL KUTXA VITORIA", 
+                       "MACCABI ELECTRA" = "MACCABI ELITE TEL AVIV",
+                       "MACCABI PLAYTIKA TEL AVIV" = "MACCABI ELITE TEL AVIV",
+                       "OLYMPIACOS PIRAEUS B.C." = "OLYMPIACOS",
+                       "PANATHINAIKOS OPAP ATHENS" = "PANATHINAIKOS ATHENS",
+                       "PANATHINAIKOS BSA ATHENS" = "PANATHINAIKOS ATHENS",
+                       "PANATHINAIKOS OPAP ATHENS" = "PANATHINAIKOS ATHENS",
+                       "PANATHINAIKOS SUPERFOODS ATHENS"  = "PANATHINAIKOS ATHENS",
+                       "KK ZAGREB CROATIA OSIGURANJE" = "KK ZAGREB" ,
+                       "SPIROU BASKET" = "SPIROU CHARLEROI",
+                       "KIROLBET BASKONIA VITORIA GASTEIZ" = "BIZKAIA BILBAO BASKET",
+                       "CAJA LABORAL BASKONIA" = "BIZKAIA BILBAO BASKET",
+                       "ROANNE" = "CHORALE ROANNE",
+                       "AX ARMANI EXCHANGE MILAN" = "ARMANI JEANS MILANO",
+                       "BASKETS BAMBERG" = "BROSE BASKETS BAMBERG",
+                       "OLIMPIJA" = "UNION OLIMPIJA LJUBLJANA",
+                       "BALONCESTO MALAGA" = "UNICAJA MALAGA",
+                       "VIRTUS ROMA" ="LOTTOMATICA ROMA"
+  )
+  )
 
 team_stats_season <- team_stats_df|>
   group_by(year,Team)|>
@@ -150,7 +208,8 @@ team_stats_season <- team_stats_df|>
             average_LUS = mean(LUS),
             average_LUF = mean(LUF),
             average_dunk = mean(Dunk),
-            win_percentage = mean(winner)
+            win_percentage = mean(winner),
+            total_games = n()
             )|>
   mutate(average_three_attempts = average_threeS + average_threeF,
          average_two_attempts = average_twoS + average_twoF)
