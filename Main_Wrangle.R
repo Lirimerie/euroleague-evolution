@@ -1,5 +1,7 @@
-euroleague<-read.csv("data/euroleague.csv")
+
 library(tidyverse)
+
+euroleague<-read.csv("data/euroleague.csv")
 
 unique_playtypes <- unique(euroleague$PLAYINFO)
 unique_playtypes
