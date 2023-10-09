@@ -58,9 +58,13 @@ stat_per_game <- stat_per_game %>%
   ungroup()
 
 stat_per_game <- stat_per_game |>
+  mutate(TeamA = toupper(TeamA))|>
+  mutate(TeamB = toupper(TeamB))
+
+stat_per_game <- stat_per_game |>
   mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB))
 
-team_stats_df <- stat_per_game %>%
+team_stats_df <- stat_per_game |>
   pivot_longer(cols = c(TeamA, TeamB), names_to = "Team_Type", values_to = "Team")|>
   mutate(winner = ifelse(winner == Team, 1, 0))
 
@@ -137,7 +141,7 @@ team_stats_season <- team_stats_df|>
   summarise(average_points = mean(Tot_Points),
             average_def_reb = mean(Def_Reb),
             average_off_reb = mean(Off_Reb),
-            avereage_threeS = mean(ThreeS),
+            average_threeS = mean(ThreeS),
             average_threeF = mean(ThreeF),
             average_twoS = mean(TwoS),
             average_twoF = mean(TwoF),
@@ -147,7 +151,9 @@ team_stats_season <- team_stats_df|>
             average_LUF = mean(LUF),
             average_dunk = mean(Dunk),
             win_percentage = mean(winner)
-            )
+            )|>
+  mutate(average_three_attempts = average_threeS + average_threeF,
+         average_two_attempts = average_twoS + average_twoF)
 # quicker? $
 # certaines équipes sont en double
 # peut rajouter des colonnes avec des pourcentages
