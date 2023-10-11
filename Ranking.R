@@ -162,7 +162,8 @@ team_stats_season <- team_stats_df|>
             total_games = n()
   )|>
   mutate(average_three_attempts = average_threeS + average_threeF,
-         average_two_attempts = average_twoS + average_twoF)
+         average_two_attempts = average_twoS + average_twoF)|>
+  filter(total_games != 1) # removes the two outliers
 # quicker? $
 # certaines équipes sont en double
 # peut rajouter des colonnes avec des pourcentages
