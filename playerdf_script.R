@@ -123,5 +123,3 @@ ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
   scale_y_continuous(limits = c(0, 0.4)) +
   theme_minimal() +  # Style minimal
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotation des étiquettes de l'axe x
-  scale_x_continuous(breaks = seq(min(df_mean_threebad$year), 
-                                  max(df_mean_threebad$year), by = 1))  # Définir les étiquettes de l'axe x
