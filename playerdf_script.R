@@ -27,26 +27,26 @@ PlayerFunctiondf <- function(euroleague) {
   
 }
 
-vecteur <- PlayerFunctiondf(euroleague)
-view(vecteur)
+stat_per_game <- PlayerFunctiondf(euroleague)
+view(stat_per_game)
 
-top3pt_scorer <- vecteur |>
+top3pt_scorer <- stat_per_game |>
   group_by(year) |>
   mutate(three_perc = tot_point3 / (tot_point3_missed+tot_point3))|>
   filter(tot_point3 == max(tot_point3))|>
   ungroup()
 
-top_def_rebound <- vecteur |>
+top_def_rebound <- stat_per_game |>
   group_by(year) |>
   filter(tot_DefReb == max(tot_DefReb)) |>
   ungroup()
 
-top_off_rebound <- vecteur |>
+top_off_rebound <- stat_per_game |>
   group_by(year) |>
   filter(tot_OffReb == max(tot_OffReb)) |>
   ungroup()
 
-top2pt_scorer <- vecteur |>
+top2pt_scorer <- stat_per_game |>
   group_by(year) |>
   filter(tot_point2 == max(tot_point2))|>
   ungroup()
