@@ -11,7 +11,7 @@ pp<-ggplot(data=team_stats_season) +
 
 
 
-
+pp
 
 best_in_class <- team_stats_season|>
   group_by(year)|>  filter(average_threeS == max(average_threeS,
@@ -77,7 +77,7 @@ p3 <- ggplot(data = team_stats_season) +
        y= "Percentage of succes")+
   theme(legend.position = "none")
 
-
+p3
 
 
 team_stats_season <- team_stats_season %>%
@@ -99,183 +99,50 @@ top_winners<-ggplot(top_teams, aes(x = as.factor(year), y = win_percentage, fill
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   theme(legend.position = "none")
   
+top_winners
 grid.arrange(top_winners,p1,nrow=2)
 
-# Créer un dataframe avec les trois meilleures équipes en termes de win_percentage par année
 
-# Créer un histogramme
 
 
 
+p4 <- ggplot(data = team_stats_season) + 
+  geom_point(data = team_stats_season %>% filter(year >= 2007 & year <= 2015),
+             aes(x = average_three_attempts, y = win_percentage), color = "black") + 
+  geom_point(data = team_stats_season %>% filter(year >= 2016 & year <= 2020),
+             aes(x = average_three_attempts, y = win_percentage), color = "blue") +
+  geom_smooth(data = team_stats_season %>% filter(year >= 2007 & year <= 2015),
+              aes(x = average_three_attempts, y = win_percentage), color = "black") +
+  geom_smooth(data = team_stats_season %>% filter(year >= 2016 & year <= 2020),
+              aes(x = average_three_attempts, y = win_percentage), color = "blue") +
+  labs(title = "Average of three-pointer attempts per game",
+       subtitle = str_wrap("The points represent different teams"),
+       x = "Three-point attempts",
+       y = "Win percentage") +
+  theme(legend.position = "none")
 
 
-# Supposons que votre dataframe s'appelle "df"
-# Assurez-vous que "year" et "average_points" sont les noms corrects des colonnes.
-
-
-df_2007 <- team_stats_season %>% filter(year == 2007)
-
-
-df_2007_sorted <- df_2007 %>% arrange(desc(average_points))
-
-
-top_5_teams <- head(df_2007_sorted, 5)
-
-
-bottom_5_teams <- tail(df_2007_sorted, 5)
-
-
-combined_teams <- rbind(top_5_teams, bottom_5_teams)
-
-points07<-ggplot(combined_teams, aes(x = reorder(Team, -average_points), y = average_points, fill = ifelse(rank(average_points) <= 5, "Bottom 5", "Top 5"))) +
-  geom_bar(stat = "identity") +
-  scale_fill_manual(values = c("Top 5" = "green", "Bottom 5" = "red")) +  
-  labs(title = "Top 5 and Bottom 5 Teams in 2007 by Average Points",
-       x = "Team",
-       y = "Average Points",
-       fill = "") +
-  theme(axis.text.x = element_text(angle = 40, hjust = 1))
-
-rm(df_2007_sorted,df_2007,top_5_teams,bottom_5_teams, combined_teams)
-
-
-
-######
-
-df_2008 <- team_stats_season %>% filter(year == 2008)
-
-
-df_2008_sorted <- df_2008 %>% arrange(desc(average_points))
-
-
-top_5_teams <- head(df_2008_sorted, 5)
-
-
-bottom_5_teams <- tail(df_2008_sorted, 5)
-
-
-combined_teams <- rbind(top_5_teams, bottom_5_teams)
-
-points08<-ggplot(combined_teams, aes(x = reorder(Team, -average_points), y = average_points, fill = ifelse(rank(average_points) <= 5, "Bottom 5", "Top 5"))) +
-  geom_bar(stat = "identity") +
-  scale_fill_manual(values = c("Top 5" = "green", "Bottom 5" = "red")) +  
-  labs(title = "Top 5 and Bottom 5 Teams in 2008 by Average Points",
-       x = "Team",
-       y = "Average Points",
-       fill="") +
-  theme(axis.text.x = element_text(angle = 40, hjust = 1))
-
-rm(df_2008_sorted,df_2008,top_5_teams,bottom_5_teams, combined_teams)
-
-
-######
-
-
-df_2009 <- team_stats_season %>% filter(year == 2009)
-
-
-df_2009_sorted <- df_2009 %>% arrange(desc(average_points))
-
-
-top_5_teams <- head(df_2009_sorted, 5)
-
-
-bottom_5_teams <- tail(df_2009_sorted, 5)
-
-
-combined_teams <- rbind(top_5_teams, bottom_5_teams)
-
-points09<-ggplot(combined_teams, aes(x = reorder(Team, -average_points), y = average_points, fill = ifelse(rank(average_points) <= 5, "Bottom 5", "Top 5"))) +
-  geom_bar(stat = "identity") +
-  scale_fill_manual(values = c("Top 5" = "green", "Bottom 5" = "red")) +  
-  labs(title = "Top 5 and Bottom 5 Teams in 2009 by Average Points",
-       x = "Team",
-       y = "Average Points",
-       fill="") +
-  theme(axis.text.x = element_text(angle = 40, hjust = 1))
-
-rm(df_2009_sorted,df_2009,top_5_teams,bottom_5_teams, combined_teams)
-
-
-
-
-#####
-
-
-df_2010 <- team_stats_season %>% filter(year == 2010)
-
-
-df_2010_sorted <- df_2010 %>% arrange(desc(average_points))
-
-
-top_5_teams <- head(df_2010_sorted, 5)
-
-
-bottom_5_teams <- tail(df_2010_sorted, 5)
-
-
-combined_teams <- rbind(top_5_teams, bottom_5_teams)
-
-points10<-ggplot(combined_teams, aes(x = reorder(Team, -average_points), y = average_points, fill = ifelse(rank(average_points) <= 5, "Bottom 5", "Top 5"))) +
-  geom_bar(stat = "identity") +
-  scale_fill_manual(values = c("Top 5" = "green", "Bottom 5" = "red")) +  
-  labs(title = "Top 5 and Bottom 5 Teams in 2010 by Average Points",
-       x = "Team",
-       y = "Average Points",
-       fill="") +
-  theme(axis.text.x = element_text(angle = 40, hjust = 1))
-
-rm(df_2010_sorted,df_2010,top_5_teams,bottom_5_teams, combined_teams)
-
-
-######
-
-
-df_2011 <- team_stats_season %>% filter(year == 2011)
-
-
-df_2011_sorted <- df_2011 %>% arrange(desc(average_points))
-
-
-top_5_teams <- head(df_2011_sorted, 5)
-
-
-bottom_5_teams <- tail(df_2011_sorted, 5)
-
-
-combined_teams <- rbind(top_5_teams, bottom_5_teams)
-
-points11<-ggplot(combined_teams, aes(x = reorder(Team, -average_points), y = average_points, fill = ifelse(rank(average_points) <= 5, "Bottom 5", "Top 5"))) +
-  geom_bar(stat = "identity") +
-  scale_fill_manual(values = c("Top 5" = "green", "Bottom 5" = "red")) +  
-  labs(title = "Top 5 and Bottom 5 Teams in 2011 by Average Points",
-       x = "Team",
-       y = "Average Points",
-       fill="") +
-  theme(axis.text.x = element_text(angle = 40, hjust = 1))
-
-rm(df_2011_sorted,df_2011,top_5_teams,bottom_5_teams, combined_teams)
-
+p4
 
 source("Function.R")
-points12 <- generate_points_plot(2012)
-points13 <- generate_points_plot(2013)
-points14 <- generate_points_plot(2014)
-points15 <- generate_points_plot(2015)
-points16 <- generate_points_plot(2016)
-points17 <- generate_points_plot(2017)
-points18 <- generate_points_plot(2018)
-points19 <- generate_points_plot(2019)
-points1 <- generate_points_plot(2016)
+points07<- create_team_points_plot(2007)
+points08<- create_team_points_plot(2008)
+points09<- create_team_points_plot(2009)
+points10<- create_team_points_plot(2010)
+points11<- create_team_points_plot(2011)
+points12<- create_team_points_plot(2012)
+points13<- create_team_points_plot(2013)
+points14<- create_team_points_plot(2014)
+points15<- create_team_points_plot(2015)
+points16<- create_team_points_plot(2016)
+points17<- create_team_points_plot(2017)
+points18<- create_team_points_plot(2018)
+points19<- create_team_points_plot(2019)
+points20<- create_team_points_plot(2020)
 
-points11
 library(gridExtra)
 
-
-grid.arrange(points07, points08, points09, points10, points11, points08, ncol = 3)
-
-p1
-  
-p2
-p3
-
+grid.arrange(points07, points08, points09, points10, ncol = 2)
+grid.arrange(points11, points12, points13, points14, ncol = 2)
+grid.arrange(points15, points16, points17, points18, ncol = 2)
+grid.arrange(points19, points20, ncol = 2)

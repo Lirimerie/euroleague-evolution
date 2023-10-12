@@ -1,0 +1,73 @@
+---
+title: "Diamonds distribution dashboard"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r setup, include = FALSE}
+library(flexdashboard) 
+library(tidyverse)
+knitr::opts_chunk$set(fig.width = 5)
+```
+
+# Statistics
+
+## Column 1 {.tabset}
+
+### Cut
+
+How many diamonds of each cut quality do we have in the data set?
+
+```{r}
+source("Main_Wrangle.R")
+ggplot(data=team_stats_season) +
+  geom_point(mapping = aes(x=year, y=average_points, color = Team))+
+  theme(legend.position = "none")
+plotly::ggplotly()
+```
+
+
+## Custom Statistics
+
+
+```{r, echo=FALSE}
+# Create a Shiny app
+library(shiny)
+library(DT)
+
+# Read the data
+source("Main_Wrangle.R")
+
+# Define the UI for the Shiny app
+ui <- fluidPage(
+  titlePanel("Custom Statistics"),
+  
+  # Year selection
+  selectInput("year", "Select Year", choices = unique(team_stats_season$year)),
+  
+  # Team selection
+  selectInput("team", "Select Team", choices = unique(team_stats_season$Team)),
+  
+  # Display statistics
+  dataTableOutput("stats_table")
+)
+
+# Define the server for the Shiny app
+server <- function(input, output) {
+  
+  # Filter data based on user selections
+  filtered_data <- reactive({
+    team_stats_season %>%
+      filter(year == input$year, Team == input$team)
+  })
+  
+  # Create a table for statistics
+  output$stats_table <- renderDataTable({
+    stats <- filtered_data() %>%
+      select(win_percentage, average_points)
+    datatable(stats)
+  })
+}
+
+# Run the Shiny app
+shinyApp(ui, server)

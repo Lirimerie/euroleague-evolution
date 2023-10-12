@@ -1,4 +1,3 @@
-
 PlayerFunctiondf <- function(euroleague) {
   playerdf <- euroleague |>
     filter(!is.na(PLAYER)) |>
@@ -15,7 +14,9 @@ PlayerFunctiondf <- function(euroleague) {
       tot_Dunk = sum(str_count(PLAYTYPE, "DUNK")),
       tot_OffReb = sum(str_count(PLAYTYPE, "O")),
       tot_DefReb = sum(str_count(PLAYTYPE, "D")),
-      Team = first(TEAM)
+      Team_player = first(TEAM),
+      TeamA = first(TeamA),  
+      TeamB = first(TeamB)
     )
   
 }
@@ -24,62 +25,47 @@ stat_per_game <- PlayerFunctiondf(euroleague) |>
   mutate(three_perc = tot_point3 / (tot_point3_missed+tot_point3))
 view(stat_per_game)
 
-top3pt_scorer <- stat_per_game |>
-  group_by(year) |>
-  mutate(three_perc = tot_point3 / (tot_point3_missed+tot_point3))|>
-  filter(tot_point3 == max(tot_point3))|>
-  ungroup()
+find_top_player <- function(stat_per_game, column_name) {
+  result <- stat_per_game |>
+    group_by(year) |>
+    filter({{column_name}} == max({{column_name}})) |>
+    ungroup()
+  return(result)
+}
 
-top_def_rebound <- stat_per_game |>
-  group_by(year) |>
-  filter(tot_DefReb == max(tot_DefReb)) |>
-  ungroup()
+top3pt_scorer <- find_top_player(stat_per_game, tot_point3)
+top_def_rebound <- find_top_player(stat_per_game, tot_DefReb)
+top_off_rebound <- find_top_player(stat_per_game, tot_OffReb)
+top2pt_scorer <- find_top_player(stat_per_game, tot_point2)
 
-top_off_rebound <- stat_per_game |>
-  group_by(year) |>
-  filter(tot_OffReb == max(tot_OffReb)) |>
-  ungroup()
 
-top2pt_scorer <- stat_per_game |>
-  group_by(year) |>
-  filter(tot_point2 == max(tot_point2))|>
-  ungroup()
+create_ggplot <- function(data, x_var, y_var, color, y_limits, title) {
+  gg <- ggplot(data, aes(x = {{x_var}}, y = {{y_var}})) +
+    geom_line(color = color) +
+    geom_point(color = color, size = 3) +
+    labs(title = title,
+         x = "Year") + 
+    theme_minimal() +
+    scale_y_continuous(limits = y_limits)
+  return(gg)
+}
 
-downtown <- ggplot(top3pt_scorer, aes(x = year, y = tot_point3)) +
-  geom_line(color = "blue") +
-  geom_point(color = "blue", size = 3) +
-  labs(title = "Maximum 3-Pointers Scored Each Year",
-       x = "Year",
-       y = "Maximum 3-Pointers Scored") +
-  theme_minimal() +
-  scale_y_continuous(limits = c(0,200))
+downtown <- create_ggplot(top3pt_scorer, year, 
+                          tot_point3, "blue", c(0, 200), 
+                          "Maximum 3-Pointers Scored Each Year")
+def_reb <- create_ggplot(top_def_rebound, year, 
+                         tot_DefReb, "red", c(0, 400), 
+                         "Record Defensive Rebound by Year")
+def_reb
+off_reb <- create_ggplot(top_off_rebound, year, 
+                         tot_OffReb, "green", c(0, 400), 
+                         "Record Offensive Rebound by Year")
+off_reb
+racket <- create_ggplot(top2pt_scorer, year, 
+                        tot_point2, "black", c(0, 200), 
+                        "Record 2-point by Year")
+racket
 
-def_reb <- ggplot(top_def_rebound, aes(x = year, y = tot_DefReb)) +
-  geom_line(color = "red") +
-  geom_point(color = "red", size = 3) +
-  labs(title = "Record Defensive Rebound by Year",
-       x = "Year",
-       y = "Number of defensive rebound") +
-  theme_minimal() +
-  scale_y_continuous(limits = c(0,400))
-
-off_reb <- ggplot(top_off_rebound, aes(x = year, y = tot_OffReb)) +
-  geom_line(color = "green") +
-  geom_point(color = "green", size = 3) +
-  labs(title = "Record Offensive Rebound by Year",
-       x = "Year",
-       y = "Number of offensive rebound") +
-  theme_minimal() +
-  scale_y_continuous(limits = c(0,400))
-
-racket <- ggplot(top2pt_scorer, aes(x = year, y = tot_point2)) +
-  geom_line() +
-  geom_point(size = 3) +
-  labs(title = "Record 2-point by Year",
-       x = "Year",
-       y = "Number of 2-point scored") +
-  theme_minimal() +
-  scale_y_continuous(limits = c(0,200))
 
 install.packages("gridExtra")
 library(gridExtra)
@@ -89,7 +75,7 @@ merged_reb <- grid.arrange(off_reb, def_reb)
 
 print(merged_shoot)
 print(merged_reb)
-
+library(ggplot2)
 ggplot(top3pt_scorer, aes(x = year, y = three_perc)) +
   geom_line() +         
   geom_point() +  
