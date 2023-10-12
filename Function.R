@@ -53,3 +53,19 @@ team_stats_plot_over_years <- function(team_stats_season, variable, title, y_lab
 
 # Access the custom names for pp and p1 outside the function
 #print(plot_threeS_over_years)
+
+# Create vectors of values for the input
+variable_values <- c("average_threeS", "average_threeF", "average_twoS")
+y_label_values <- c("Y Label 1", "Y Label 2", "Y Label 3")
+title_values <- paste("Evolution of", y_label_values, "over the years")
+p1_name_values <- paste("plot_",y_label_values)
+
+output_plots_list <- lapply(seq_along(variable_values), function(i) {
+  team_stats_plot_over_years(team_stats_season, variable_values[[i]],
+                             title_values[[i]],
+                             y_label_values[[i]], p1_name_values[[i]])
+})
+
+
+
+
