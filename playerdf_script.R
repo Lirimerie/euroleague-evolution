@@ -1,10 +1,3 @@
-euroleague<-read.csv("data/euroleague.csv")
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-
-euroleague <- euroleague |>
-  mutate(PLAYINFO = str_remove(PLAYINFO, "\\s*\\([^)]+\\)"))
 
 PlayerFunctiondf <- function(euroleague) {
   playerdf <- euroleague |>

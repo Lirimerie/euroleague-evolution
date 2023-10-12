@@ -13,6 +13,7 @@ euroleague <- euroleague |>
 #Ugly line to reduce the details of the Play information to 33 different ones
 #by removing a space and what is inside the parenthesis
 
+source("playerdf_script.R")
 
 
 unique_playtypes <- unique(euroleague$PLAYINFO)
