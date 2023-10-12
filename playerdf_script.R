@@ -27,26 +27,27 @@ PlayerFunctiondf <- function(euroleague) {
   
 }
 
-vecteur <- PlayerFunctiondf(euroleague)
-view(vecteur)
+stat_per_game <- PlayerFunctiondf(euroleague) |>
+  mutate(three_perc = tot_point3 / (tot_point3_missed+tot_point3))
+view(stat_per_game)
 
-top3pt_scorer <- vecteur |>
+top3pt_scorer <- stat_per_game |>
   group_by(year) |>
   mutate(three_perc = tot_point3 / (tot_point3_missed+tot_point3))|>
   filter(tot_point3 == max(tot_point3))|>
   ungroup()
 
-top_def_rebound <- vecteur |>
+top_def_rebound <- stat_per_game |>
   group_by(year) |>
   filter(tot_DefReb == max(tot_DefReb)) |>
   ungroup()
 
-top_off_rebound <- vecteur |>
+top_off_rebound <- stat_per_game |>
   group_by(year) |>
   filter(tot_OffReb == max(tot_OffReb)) |>
   ungroup()
 
-top2pt_scorer <- vecteur |>
+top2pt_scorer <- stat_per_game |>
   group_by(year) |>
   filter(tot_point2 == max(tot_point2))|>
   ungroup()
@@ -104,4 +105,24 @@ ggplot(top3pt_scorer, aes(x = year, y = three_perc)) +
   theme_minimal() +
   scale_y_continuous(limits = c(0.10,0.6))
 
+df_threebad <- stat_per_game|>
+  filter(!(is.na(three_perc) | tot_point3 == 0))|>
+  group_by(year) |>
+  slice_min(order_by = three_perc, n = 75)|>
+  arrange(year, three_perc)
+
+df_mean_threebad <- df_threebad |>
+  group_by(year) |>
+  summarise(mean_three_perc = mean(three_perc))
+
+ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Mean of the 75 players with the lowest 3-point percentage",
+       x = "Year",
+       y = "Percentage of 3-point success") +
+  scale_y_continuous(limits = c(0, 0.4)) +
+  theme_minimal() +  # Style minimal
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotation des étiquettes de l'axe x
+  scale_x_continuous(breaks = seq(min(df_mean_threebad$year), 
+                                  max(df_mean_threebad$year), by = 1))  # Définir les étiquettes de l'axe x
 
