@@ -75,7 +75,7 @@ merged_reb <- grid.arrange(off_reb, def_reb)
 
 print(merged_shoot)
 print(merged_reb)
-
+library(ggplot2)
 ggplot(top3pt_scorer, aes(x = year, y = three_perc)) +
   geom_line() +         
   geom_point() +  
