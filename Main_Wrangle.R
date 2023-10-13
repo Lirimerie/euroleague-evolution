@@ -13,11 +13,10 @@ euroleague <- euroleague |>
 #Ugly line to reduce the details of the Play information to 33 different ones
 #by removing a space and what is inside the parenthesis
 
-source("playerdf_script.R")
+#source("playerdf_script.R")
 
 
 unique_playtypes <- unique(euroleague$PLAYINFO)
-unique_playtypes
 
 #euroleague <- euroleague |>
   #filter(!str_detect(PLAYINFO, "Fighting|Bench Foul|Coach Foul|Begin Period|
@@ -43,8 +42,24 @@ euroleague <- euroleague |>
 source("CreationDataFrame.R")
 
 stat_per_games <- CreationDataFrame(euroleague)
+stat_per_games_last_4 <- CreationDataFrame_last4(euroleague)
 
-stat_per_games <- stat_per_game |>
+
+# Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
+last_pts <- euroleague %>%
+  filter(MINUTE == 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) %>%
+  group_by(year, gamenumber) %>%
+  summarise(
+    pts_A = tail(POINTS_A, 1),
+    pts_B = tail(POINTS_B, 1)
+  )
+
+# Joignez le résultat avec stat_per_games_last_4
+stat_per_games_last_4 <- stat_per_games_last_4 %>%
+  left_join(last_pts, by = c("year", "gamenumber"))
+
+
+stat_per_games <- stat_per_games |>
   rowwise() |>
   mutate(
     Tot_Point_A = 3 * sum(ThreeSA, na.rm = TRUE) + 
@@ -60,11 +75,11 @@ stat_per_games <- stat_per_game |>
   ) |>
   ungroup()
 
-stat_per_games <- stat_per_game |>
+stat_per_games <- stat_per_games |>
   mutate(TeamA = toupper(TeamA))|>
   mutate(TeamB = toupper(TeamB))
 
-stat_per_games <- stat_per_game |>
+stat_per_games <- stat_per_games |>
   mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB))
 
 source("Ranking.R")
