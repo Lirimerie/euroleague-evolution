@@ -3,7 +3,37 @@ library(tidyverse)
 library(dplyr)
 
 
-CreationDataFrame <- function(euroleague) {
+
+
+process_playtype <- function(df, stat_p_g, playtype, stat_a, stat_b) {
+  result <- df %>%
+    filter(grepl(playtype, PLAYTYPE)) %>%
+    group_by(year, gamenumber, TEAM) %>%
+    summarize(jjj = n())
+  
+  col_name_a <- paste(stat_a, "A", sep = "_")
+  col_name_b <- paste(stat_b, "B", sep = "_")
+  
+  stat_p_g <- stat_p_g %>%
+    left_join(result, by = c("gamenumber", "year", TeamA = "TEAM")) %>%
+    mutate(!!col_name_a := jjj) %>%
+    select(-jjj)
+  
+  stat_p_g <- stat_p_g %>%
+    left_join(result, by = c("gamenumber", "year", TeamB = "TEAM")) %>%
+    mutate(!!col_name_b := jjj) %>%
+    select(-jjj)
+  
+  rm(result)
+  
+  return(stat_p_g)
+}
+
+
+
+
+
+CreationDataFrameTEST <- function(euroleague) {
   stat_per_games <- euroleague %>%
     group_by(gamenumber, year) %>%
     summarise(
@@ -18,202 +48,40 @@ CreationDataFrame <- function(euroleague) {
       tot_Dunk = sum(str_count(PLAYTYPE, "DUNK")),
       tot_OffReb = sum(str_count(PLAYTYPE, "O")),
       tot_DefReb = sum(str_count(PLAYTYPE, "D")),
+      tot_foul = sum(str_count(PLAYTYPE, "CM")),
+      tot_foul_drawn = sum(str_count(PLAYTYPE, "RV")),
       TeamA = first(TeamA),  
       TeamB = first(TeamB)
     )
   
-  result <- euroleague %>%
-    filter(grepl("3FGM", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(ThreeSA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(ThreeSB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  
-  result <- euroleague %>%
-    filter(grepl("3FGA", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(ThreeFA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(ThreeFB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("2FGM", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(TwoSA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(TwoSB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("2FGA", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(TwoFA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(TwoFB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("FTM", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(FTSA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(FTSB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("FTA", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(FTFA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(FTFB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("LAYUPMD", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(LUSA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(LUSB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("LAYUPATT", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(LUFA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(LUFB = jjj) %>%
-    select(-jjj)
-  
-  
-  rm(result)
-  
-  
-  result <- euroleague %>%
-    filter(grepl("DUNK", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(DunkA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(DunkB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("O", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(Off_RebA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(Off_RebB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("D", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(Def_RebA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(Def_RebB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGM", "ThreeS", "ThreeS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGA", "ThreeF", "ThreeF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGM", "TwoS", "TwoS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGA", "TwoF", "TwoF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTM", "FTS", "FTS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTA", "FTF", "FTF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPMD", "LUS", "LUS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPATT", "LUF", "LUF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "DUNK", "DUNK", "DUNK")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "O", "Off_Reb", "Off_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "D", "Deff_Reb", "Deff_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "CM", "Foul_commited", "Foul_commited")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "RV", "Foul_Drawn", "Foul_Drawn")
 
+  
   return(stat_per_games)
 }
+  
+  
+  
+  
+
+
+
+
+
+
+
 
 
 CreationDataFrame_last4 <- function(euroleague) {
@@ -236,198 +104,78 @@ CreationDataFrame_last4 <- function(euroleague) {
       tot_Dunk = sum(str_count(PLAYTYPE, "DUNK")),
       tot_OffReb = sum(str_count(PLAYTYPE, "O")),
       tot_DefReb = sum(str_count(PLAYTYPE, "D")),
+      tot_foul = sum(str_count(PLAYTYPE, "CM")),
+      tot_foul_drawn = sum(str_count(PLAYTYPE, "RV")),
       TeamA = first(TeamA),  
       TeamB = first(TeamB),
     )
   
-  result <- euroleague %>%
-    filter(grepl("3FGM", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGM", "ThreeS", "ThreeS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGA", "ThreeF", "ThreeF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGM", "TwoS", "TwoS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGA", "TwoF", "TwoF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTM", "FTS", "FTS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTA", "FTF", "FTF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPMD", "LUS", "LUS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPATT", "LUF", "LUF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "DUNK", "DUNK", "DUNK")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "O", "Off_Reb", "Off_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "D", "Deff_Reb", "Deff_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "CM", "Foul_commited", "Foul_commited")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "RV", "Foul_Drawn", "Foul_Drawn")
   
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(ThreeSA = jjj) %>%
-    select(-jjj)
   
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(ThreeSB = jjj) %>%
-    select(-jjj)
+  return(stat_per_games)
   
-  rm(result)
+}
+
+
+
+
+
+
+CreationDataFrame_37 <- function(euroleague) {
+  # Filtrer les données où les valeurs de la colonne "minute" sont supérieures à 35
+  euroleague <- euroleague %>%
+    filter(MINUTE <= 35)
   
-  result <- euroleague %>%
-    filter(grepl("3FGA", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
+  # Ensuite, vous pouvez continuer avec le reste du traitement
+  stat_per_games <- euroleague %>%
+    group_by(gamenumber, year) %>%
+    summarise(
+      tot_point3 = sum(str_count(PLAYTYPE, "3FGM")),
+      tot_point3_missed = sum(str_count(PLAYTYPE, "3FGA")),
+      tot_point2 = sum(str_count(PLAYTYPE, "2FGM")),
+      tot_point2_missed = sum(str_count(PLAYTYPE, "2FGA")),
+      tot_FT = sum(str_count(PLAYTYPE, "FTM")),
+      tot_FT_missed = sum(str_count(PLAYTYPE, "FTA")),
+      tot_Layup = sum(str_count(PLAYTYPE, "LAYUPMD")),
+      tot_Layup_missed = sum(str_count(PLAYTYPE, "LAYUPATT")),
+      tot_Dunk = sum(str_count(PLAYTYPE, "DUNK")),
+      tot_OffReb = sum(str_count(PLAYTYPE, "O")),
+      tot_DefReb = sum(str_count(PLAYTYPE, "D")),
+      tot_foul = sum(str_count(PLAYTYPE, "CM")),
+      tot_foul_drawn = sum(str_count(PLAYTYPE, "RV")),
+      TeamA = first(TeamA),  
+      TeamB = first(TeamB),
+    )
   
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(ThreeFA = jjj) %>%
-    select(-jjj)
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGM", "ThreeS", "ThreeS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGA", "ThreeF", "ThreeF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGM", "TwoS", "TwoS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGA", "TwoF", "TwoF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTM", "FTS", "FTS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTA", "FTF", "FTF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPMD", "LUS", "LUS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPATT", "LUF", "LUF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "DUNK", "DUNK", "DUNK")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "O", "Off_Reb", "Off_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "D", "Deff_Reb", "Deff_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "CM", "Foul_commited", "Foul_commited")
+  stat_per_games <- process_playtype(euroleague, stat_per_games, "RV", "Foul_Drawn", "Foul_Drawn")
   
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(ThreeFB = jjj) %>%
-    select(-jjj)
   
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("2FGM", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(TwoSA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(TwoSB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("2FGA", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(TwoFA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(TwoFB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("FTM", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(FTSA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(FTSB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("FTA", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(FTFA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(FTFB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("LAYUPMD", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(LUSA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(LUSB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("LAYUPATT", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(LUFA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(LUFB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("DUNK", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(DunkA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(DunkB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("O", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(Off_RebA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(Off_RebB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
-  
-  result <- euroleague %>%
-    filter(grepl("D", PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
-    summarize(jjj = n())
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamA" = "TEAM")) %>%
-    mutate(Def_RebA = jjj) %>%
-    select(-jjj)
-  
-  stat_per_games <- stat_per_games %>%
-    left_join(result, by = c("gamenumber", "year", "TeamB" = "TEAM")) %>%
-    mutate(Def_RebB = jjj) %>%
-    select(-jjj)
-  
-  rm(result)
+  return(stat_per_games)
   
   return(stat_per_games)
 }
-
-#Punaise

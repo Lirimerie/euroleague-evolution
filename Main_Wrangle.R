@@ -13,7 +13,7 @@ euroleague <- euroleague |>
 #Ugly line to reduce the details of the Play information to 33 different ones
 #by removing a space and what is inside the parenthesis
 
-#source("playerdf_script.R")
+source("playerdf_script.R")
 
 
 unique_playtypes <- unique(euroleague$PLAYINFO)
@@ -40,9 +40,10 @@ euroleague <- euroleague |>
   ))
 
 source("CreationDataFrame.R")
-
-stat_per_games <- CreationDataFrame(euroleague)
+stat_per_games <- CreationDataFrameTEST(euroleague)
 stat_per_games_last_4 <- CreationDataFrame_last4(euroleague)
+stat_per_game_first37<- CreationDataFrame_37(euroleague)
+
 
 
 # Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
@@ -62,16 +63,16 @@ stat_per_games_last_4 <- stat_per_games_last_4 %>%
 stat_per_games <- stat_per_games |>
   rowwise() |>
   mutate(
-    Tot_Point_A = 3 * sum(ThreeSA, na.rm = TRUE) + 
-      2 * sum(TwoSA, na.rm = TRUE) + 
-      sum(FTSA, na.rm = TRUE) + 
-      2 * sum(LUSA, na.rm = TRUE) + 
-      2 * sum(DunkA, na.rm = TRUE),
-    Tot_Point_B = 3 * sum(ThreeSB, na.rm = TRUE) + 
-      2 * sum(TwoSB, na.rm = TRUE) + 
-      sum(FTSB, na.rm = TRUE) + 
-      2 * sum(LUSB, na.rm = TRUE) + 
-      2 * sum(DunkB, na.rm = TRUE)
+    Tot_Point_A = 3 * sum(ThreeS_A, na.rm = TRUE) + 
+      2 * sum(TwoS_A, na.rm = TRUE) + 
+      sum(FTS_A, na.rm = TRUE) + 
+      2 * sum(LUS_A, na.rm = TRUE) + 
+      2 * sum(DUNK_A, na.rm = TRUE),
+    Tot_Point_B = 3 * sum(ThreeS_B, na.rm = TRUE) + 
+      2 * sum(TwoS_B, na.rm = TRUE) + 
+      sum(FTS_B, na.rm = TRUE) + 
+      2 * sum(LUS_B, na.rm = TRUE) + 
+      2 * sum(DUNK_B, na.rm = TRUE)
   ) |>
   ungroup()
 
