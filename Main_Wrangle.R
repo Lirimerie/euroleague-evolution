@@ -42,9 +42,9 @@ euroleague <- euroleague |>
 
 source("CreationDataFrame.R")
 
-stat_per_game <- CreationDataFrame(euroleague)
+stat_per_games <- CreationDataFrame(euroleague)
 
-stat_per_game <- stat_per_game |>
+stat_per_games <- stat_per_game |>
   rowwise() |>
   mutate(
     Tot_Point_A = 3 * sum(ThreeSA, na.rm = TRUE) + 
@@ -60,11 +60,11 @@ stat_per_game <- stat_per_game |>
   ) |>
   ungroup()
 
-stat_per_game <- stat_per_game |>
+stat_per_games <- stat_per_game |>
   mutate(TeamA = toupper(TeamA))|>
   mutate(TeamB = toupper(TeamB))
 
-stat_per_game <- stat_per_game |>
+stat_per_games <- stat_per_game |>
   mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB))
 
 source("Ranking.R")
