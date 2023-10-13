@@ -138,7 +138,7 @@ team_stats_df <- team_stats_df|>
                        "PARTIZAN MT:S" = "PARTIZAN",
                        "TAU CERAMICA" = "CAJA LABORAL BASKONIA",
                        "GESCRAP BB" = "CAJA LABORAL BASKONIA",
-                       "PANATHINAIKOS" = "PANATHINAIKOS ATHENS",
+                       "PANATHINAIKOS ATHENS" = "PANATHINAIKOS",
                        "FC BARCELONA " = "FC BARCELONA"
   )
   )|>
