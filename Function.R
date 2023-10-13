@@ -23,7 +23,7 @@ create_team_points_plot <- function(Year) {
   
   return(plot)
 }
-team_stats_plot_over_years <- function(team_stats_season, variable, title, y_label, p1_name) {
+team_stats_plot_over_years <- function(team_stats_season, variable, title, y_label, plot_name) {
   
   best_in_class <- team_stats_season |>
     group_by(year) |>
@@ -44,10 +44,10 @@ team_stats_plot_over_years <- function(team_stats_season, variable, title, y_lab
     theme(legend.position = "none")
   
   # Assign the plots to custom names
-  assign(p1_name, p1, envir = .GlobalEnv)
+  assign(plot_name, p1, envir = .GlobalEnv)
   
   # Return the custom names for reference
-  return(p1 = p1_name)
+  return(p1 = plot_name)
 }
 
 # Example usage:
@@ -60,6 +60,25 @@ team_stats_plot_over_years <- function(team_stats_season, variable, title, y_lab
 # Access the custom names for pp and p1 outside the function
 #print(plot_threeS_over_years)
 
-# Create vectors of values for the input
+plot_effect_on_win <- function(data, variable, x_label) {
+  p <- ggplot(data = data) +
+    geom_point(data = data |> filter(year >= 2007 & year <= 2015),
+               aes(x = {{ variable }}, y = winner), color = "black") +
+    geom_point(data = data |> filter(year >= 2016 & year <= 2020),
+               aes(x = {{ variable }}, y = winner), color = "blue") +
+    geom_smooth(data = data |> filter(year >= 2007 & year <= 2015),
+                aes(x = {{ variable }}, y = winner), color = "black") +
+    geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),
+                aes(x = {{ variable }}, y = winner), color = "blue") +
+    labs(title = paste("Number of", x_label, "per game"),
+         subtitle = str_wrap("The points represent different games"),
+         x = x_label,  # Use the custom x_label here
+         y = "Win percentage") +
+    theme(legend.position = "none")
+  
+  return(p)
+}
 
+# Example usage:
+#p4 <- plot_effect_on_win(team_stats_df, three_attempts, "Three-point attempts")
 

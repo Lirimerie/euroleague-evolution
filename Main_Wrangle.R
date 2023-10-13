@@ -67,7 +67,8 @@ stat_per_game <- stat_per_game |>
 stat_per_game <- stat_per_game |>
   mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB))
 
-source("Ranking.R")
+source("Ranking.R") 
+#creates two dataframes with statistics per team and per game/per season 
 
 
 

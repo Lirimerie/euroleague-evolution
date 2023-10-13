@@ -142,7 +142,12 @@ team_stats_df <- team_stats_df|>
                        "FC BARCELONA " = "FC BARCELONA"
   )
   )|>
-  mutate(three_attempts = ThreeS+ThreeF)
+  mutate(three_attempts = coalesce(ThreeS, 0) + coalesce(ThreeF, 0),
+         two_attempts = coalesce(TwoS, 0) + coalesce(TwoF, 0),
+         FT_attempts = coalesce(FTS, 0) + coalesce(FTF, 0))|>
+  mutate(three_accuracy = ThreeS/three_attempts,
+         two_accuracy = TwoS/two_attempts,
+         FT_accuracy = FTS/FT_attempts)
 
 team_stats_season <- team_stats_df|>
   group_by(year,Team)|>
@@ -160,10 +165,14 @@ team_stats_season <- team_stats_df|>
             average_LUF = mean(LUF),
             average_dunk = mean(Dunk),
             win_percentage = mean(winner),
+            avg_3pt_accuracy = mean(three_accuracy),
+            avg_2pt_accuracy = mean(two_accuracy),
+            avg_FT_accuracy = mean(FT_accuracy),
             total_games = n()
   )|>
   mutate(average_three_attempts = average_threeS + average_threeF,
-         average_two_attempts = average_twoS + average_twoF)|>
+         average_two_attempts = average_twoS + average_twoF,
+         average_FT_attempts = average_FTS + average_FTF)|>
   filter(total_games != 1) # removes the two outliers
 # quicker? $
 # certaines équipes sont en double
