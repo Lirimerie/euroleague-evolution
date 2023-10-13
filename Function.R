@@ -62,10 +62,6 @@ team_stats_plot_over_years <- function(team_stats_season, variable, title, y_lab
 
 plot_effect_on_win <- function(data, variable, x_label) {
   p <- ggplot(data = data) +
-    geom_point(data = data |> filter(year >= 2007 & year <= 2015),
-               aes(x = {{ variable }}, y = winner), color = "black") +
-    geom_point(data = data |> filter(year >= 2016 & year <= 2020),
-               aes(x = {{ variable }}, y = winner), color = "blue") +
     geom_smooth(data = data |> filter(year >= 2007 & year <= 2015),
                 aes(x = {{ variable }}, y = winner), color = "black") +
     geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),

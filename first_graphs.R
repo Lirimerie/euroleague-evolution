@@ -106,26 +106,17 @@ top_winners
 grid.arrange(top_winners,p1,nrow=2)
 
 
+Effect_3Attempts_on_Win <- plot_effect_on_win(team_stats_df, 
+                                              three_attempts, 
+                                              "Three-point attempts")
 
+print(Effect_3Attempts_on_Win)
 
+Effect_3accuracy_on_Win <- plot_effect_on_win(team_stats_df, 
+                                              three_accuracy, 
+                                              "Three-point accuracy")
 
-p4 <- ggplot(data = team_stats_df) + 
-  geom_point(data = team_stats_df %>% filter(year >= 2007 & year <= 2015),
-             aes(x = three_attempts, y = winner), color = "black") + 
-  geom_point(data = team_stats_df %>% filter(year >= 2016 & year <= 2020),
-             aes(x = three_attempts, y = winner), color = "blue") +
-  geom_smooth(data = team_stats_df %>% filter(year >= 2007 & year <= 2015),
-              aes(x = three_attempts, y = winner), color = "black") +
-  geom_smooth(data = team_stats_df %>% filter(year >= 2016 & year <= 2020),
-              aes(x = three_attempts, y = winner), color = "blue") +
-  labs(title = "Number of three-pointer attempts per game",
-       subtitle = str_wrap("The points represent different games"),
-       x = "Three-point attempts",
-       y = "Win percentage") +
-  theme(legend.position = "none")
-
-
-p4
+print(Effect_3accuracy_on_Win)
 
 
 points07<- create_team_points_plot(2007)
