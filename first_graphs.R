@@ -106,17 +106,17 @@ grid.arrange(top_winners,p1,nrow=2)
 
 
 
-p4 <- ggplot(data = team_stats_season) + 
-  geom_point(data = team_stats_season %>% filter(year >= 2007 & year <= 2015),
-             aes(x = average_three_attempts, y = win_percentage), color = "black") + 
-  geom_point(data = team_stats_season %>% filter(year >= 2016 & year <= 2020),
-             aes(x = average_three_attempts, y = win_percentage), color = "blue") +
-  geom_smooth(data = team_stats_season %>% filter(year >= 2007 & year <= 2015),
-              aes(x = average_three_attempts, y = win_percentage), color = "black") +
-  geom_smooth(data = team_stats_season %>% filter(year >= 2016 & year <= 2020),
-              aes(x = average_three_attempts, y = win_percentage), color = "blue") +
-  labs(title = "Average of three-pointer attempts per game",
-       subtitle = str_wrap("The points represent different teams"),
+p4 <- ggplot(data = team_stats_df) + 
+  geom_point(data = team_stats_df %>% filter(year >= 2007 & year <= 2015),
+             aes(x = three_attempts, y = winner), color = "black") + 
+  geom_point(data = team_stats_df %>% filter(year >= 2016 & year <= 2020),
+             aes(x = three_attempts, y = winner), color = "blue") +
+  geom_smooth(data = team_stats_df %>% filter(year >= 2007 & year <= 2015),
+              aes(x = three_attempts, y = winner), color = "black") +
+  geom_smooth(data = team_stats_df %>% filter(year >= 2016 & year <= 2020),
+              aes(x = three_attempts, y = winner), color = "blue") +
+  labs(title = "Number of three-pointer attempts per game",
+       subtitle = str_wrap("The points represent different games"),
        x = "Three-point attempts",
        y = "Win percentage") +
   theme(legend.position = "none")

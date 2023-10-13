@@ -141,7 +141,8 @@ team_stats_df <- team_stats_df|>
                        "PANATHINAIKOS" = "PANATHINAIKOS ATHENS",
                        "FC BARCELONA " = "FC BARCELONA"
   )
-  )
+  )|>
+  mutate(three_attempts = ThreeS+ThreeF)
 
 team_stats_season <- team_stats_df|>
   group_by(year,Team)|>
