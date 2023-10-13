@@ -17,7 +17,6 @@ source("playerdf_script.R")
 
 
 unique_playtypes <- unique(euroleague$PLAYINFO)
-unique_playtypes
 
 #euroleague <- euroleague |>
   #filter(!str_detect(PLAYINFO, "Fighting|Bench Foul|Coach Foul|Begin Period|
@@ -41,30 +40,47 @@ euroleague <- euroleague |>
   ))
 
 source("CreationDataFrame.R")
+stat_per_games <- CreationDataFrameTEST(euroleague)
+stat_per_games_last_4 <- CreationDataFrame_last4(euroleague)
+stat_per_game_first37<- CreationDataFrame_37(euroleague)
 
-stat_per_game <- CreationDataFrame(euroleague)
 
-stat_per_game <- stat_per_game |>
+
+# Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
+last_pts <- euroleague %>%
+  filter(MINUTE == 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) %>%
+  group_by(year, gamenumber) %>%
+  summarise(
+    pts_A = tail(POINTS_A, 1),
+    pts_B = tail(POINTS_B, 1)
+  )
+
+# Joignez le résultat avec stat_per_games_last_4
+stat_per_games_last_4 <- stat_per_games_last_4 %>%
+  left_join(last_pts, by = c("year", "gamenumber"))
+
+
+stat_per_games <- stat_per_games |>
   rowwise() |>
   mutate(
-    Tot_Point_A = 3 * sum(ThreeSA, na.rm = TRUE) + 
-      2 * sum(TwoSA, na.rm = TRUE) + 
-      sum(FTSA, na.rm = TRUE) + 
-      2 * sum(LUSA, na.rm = TRUE) + 
-      2 * sum(DunkA, na.rm = TRUE),
-    Tot_Point_B = 3 * sum(ThreeSB, na.rm = TRUE) + 
-      2 * sum(TwoSB, na.rm = TRUE) + 
-      sum(FTSB, na.rm = TRUE) + 
-      2 * sum(LUSB, na.rm = TRUE) + 
-      2 * sum(DunkB, na.rm = TRUE)
+    Tot_Point_A = 3 * sum(ThreeS_A, na.rm = TRUE) + 
+      2 * sum(TwoS_A, na.rm = TRUE) + 
+      sum(FTS_A, na.rm = TRUE) + 
+      2 * sum(LUS_A, na.rm = TRUE) + 
+      2 * sum(DUNK_A, na.rm = TRUE),
+    Tot_Point_B = 3 * sum(ThreeS_B, na.rm = TRUE) + 
+      2 * sum(TwoS_B, na.rm = TRUE) + 
+      sum(FTS_B, na.rm = TRUE) + 
+      2 * sum(LUS_B, na.rm = TRUE) + 
+      2 * sum(DUNK_B, na.rm = TRUE)
   ) |>
   ungroup()
 
-stat_per_game <- stat_per_game |>
+stat_per_games <- stat_per_games |>
   mutate(TeamA = toupper(TeamA))|>
   mutate(TeamB = toupper(TeamB))
 
-stat_per_game <- stat_per_game |>
+stat_per_games <- stat_per_games |>
   mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB))
 
 source("Ranking.R") 

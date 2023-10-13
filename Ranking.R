@@ -1,4 +1,4 @@
-team_stats_df <- stat_per_game |>
+team_stats_df <- stat_per_games |>
   pivot_longer(cols = c(TeamA, TeamB), names_to = "Team_Type", values_to = "Team")|>
   mutate(winner = ifelse(winner == Team, 1, 0))
 

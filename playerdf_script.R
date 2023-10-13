@@ -67,7 +67,7 @@ racket <- create_ggplot(top2pt_scorer, year,
 racket
 
 
-install.packages("gridExtra")
+# install.packages("gridExtra")
 library(gridExtra)
 
 merged_shoot <- grid.arrange(downtown, racket, ncol = 1)
