@@ -13,7 +13,7 @@ euroleague <- euroleague |>
 #Ugly line to reduce the details of the Play information to 33 different ones
 #by removing a space and what is inside the parenthesis
 
-source("playerdf_script.R")
+
 
 
 unique_playtypes <- unique(euroleague$PLAYINFO)
@@ -42,22 +42,7 @@ euroleague <- euroleague |>
 source("CreationDataFrame.R")
 stat_per_games <- CreationDataFrameTEST(euroleague)
 stat_per_games_last_4 <- CreationDataFrame_last4(euroleague)
-stat_per_game_first37<- CreationDataFrame_37(euroleague)
-
-
-
-# Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
-last_pts <- euroleague |>
-  filter(MINUTE == 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) |>
-  group_by(year, gamenumber) |>
-  summarise(
-    pts_A = tail(POINTS_A, 1),
-    pts_B = tail(POINTS_B, 1)
-  )
-
-# Join le résultat avec stat_per_games_last_4
-stat_per_games_last_4 <- stat_per_games_last_4 |>
-  left_join(last_pts, by = c("year", "gamenumber"))
+stat_per_games_first37<- CreationDataFrame_37(euroleague)
 
 
 stat_per_games <- stat_per_games |>
@@ -83,7 +68,85 @@ stat_per_games <- stat_per_games |>
 stat_per_games <- stat_per_games |>
   mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB))
 
+stat_per_games_first37 <- stat_per_games_first37|>
+  mutate(foul_relative_minutes = (tot_foul/37))
+
+# Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
+last_pts <- euroleague |>
+  filter(MINUTE == 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) |>
+  group_by(year, gamenumber) |>
+  summarise(
+    pts_A = tail(POINTS_A, 1),
+    pts_B = tail(POINTS_B, 1)
+  )
+
+# Join le résultat avec stat_per_games_last_4
+stat_per_games_last_4 <- stat_per_games_last_4 |>
+  left_join(last_pts, by = c("year", "gamenumber"))
+stat_per_games_last_4 <- stat_per_games_last_4|>
+  mutate(absolute_diff_points = abs(pts_A - pts_B),
+         foul_relative_minutes = (tot_foul/4),
+         winner_foul = ifelse(pts_A > pts_B, Foul_commited_A, Foul_commited_B),
+         looser_foul = ifelse(pts_A < pts_B, Foul_commited_A, Foul_commited_B))
+
+p1 <- ggplot(data = stat_per_games_last_4) +
+  geom_point(data = subset(stat_per_games_last_4, absolute_diff_points < 25),
+             aes(x = absolute_diff_points, y = tot_foul)) +
+  geom_smooth(data = subset(stat_per_games_last_4, absolute_diff_points < 25),
+              aes(x = absolute_diff_points, y = tot_foul)) +
+  theme(legend.position = "none")
+p1
+
+
+
+
+
+plot_foul<- ggplot(data = stat_per_games_last_4) +
+  geom_point(data = subset(stat_per_games_last_4,
+                           absolute_diff_points < 25 & absolute_diff_points > 10),
+             aes(x = absolute_diff_points, y = tot_foul,
+                 color = ifelse((Foul_commited_A >Foul_commited_B & pts_A < pts_B) | (Foul_commited_B > Foul_commited_A & pts_B < pts_A), "red", "black"))) +
+  geom_smooth(data = subset(stat_per_games_last_4, absolute_diff_points < 25),
+              aes(x = absolute_diff_points, y = tot_foul), color = "blue") +
+  theme(legend.position = "none") +
+  scale_color_identity()
+plot_foul
+
+
+
+
+mean_foul_relative_minutes_first37 <- mean(stat_per_games_first37$foul_relative_minutes, na.rm = TRUE)
+mean_foul_relative_minutes_last4_serré <- mean(stat_per_games_last_4$foul_relative_minutes[stat_per_games_last_4$absolute_diff_points < 15], na.rm = TRUE)
+mean_foul_relative_minutes_last4_pas_serré <- mean(stat_per_games_last_4$foul_relative_minutes[stat_per_games_last_4$absolute_diff_points >= 15], na.rm = TRUE)
+df <- data.frame(Dataset = c("first_part_game", "tight_game", "non_tight_game"),
+                 MeanFoulRelativeMinutes = c(mean_foul_relative_minutes_first37, mean_foul_relative_minutes_last4_serré, mean_foul_relative_minutes_last4_pas_serré))
+p2 <- ggplot(data = df, aes(x = Dataset, y = MeanFoulRelativeMinutes, fill = Dataset)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("first_part_game" = "blue", "tight_game" = "red", "non_tight_game" = "lightcoral"),
+                    labels = c("first_part_game" = "first_part_game", "tight_game" = "tight_game", "non_tight_game" = "non_tight_game"))+
+  theme(legend.position = "bottom") +
+  ylab("Mean Foul Relative Minutes") +
+  xlab(NULL)
+p2
+
+
+mean_looser_foul <- mean(stat_per_games_last_4$looser_foul, na.rm = TRUE)
+mean_winner_foul <- mean(stat_per_games_last_4$winner_foul, na.rm = TRUE)
+labels <- c("Looser", "Winner")
+
+plot_mean_foul <- ggplot(data = NULL, aes(x = labels)) +
+  geom_bar(stat = "identity", aes(y = c(mean_looser_foul, mean_winner_foul)), fill = c("red", "blue")) +
+  labs(y = "Moyenne des Foul", title = "Moyenne des Foul pour Looser et Winner") +
+  theme(axis.text.x = element_blank())  # Pour masquer les étiquettes de l'axe x
+print(plot_mean_foul)
+
+
+
+
 source("Ranking.R") 
+
+source("playerdf_script.R")
+
 team_stats_df <- process_team_stats_data(stat_per_games)
 team_stats_season <- calculate_team_season_stats(team_stats_df)
 #creates two dataframes with statistics per team and per game/per season
