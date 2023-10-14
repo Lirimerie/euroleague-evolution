@@ -72,16 +72,6 @@ CreationDataFrameTEST <- function(euroleague) {
   return(stat_per_games)
 }
   
-  
-  
-  
-
-
-
-
-
-
-
 
 
 CreationDataFrame_last4 <- function(euroleague) {

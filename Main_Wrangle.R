@@ -47,16 +47,16 @@ stat_per_game_first37<- CreationDataFrame_37(euroleague)
 
 
 # Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
-last_pts <- euroleague %>%
-  filter(MINUTE == 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) %>%
-  group_by(year, gamenumber) %>%
+last_pts <- euroleague |>
+  filter(MINUTE == 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) |>
+  group_by(year, gamenumber) |>
   summarise(
     pts_A = tail(POINTS_A, 1),
     pts_B = tail(POINTS_B, 1)
   )
 
-# Joignez le résultat avec stat_per_games_last_4
-stat_per_games_last_4 <- stat_per_games_last_4 %>%
+# Join le résultat avec stat_per_games_last_4
+stat_per_games_last_4 <- stat_per_games_last_4 |>
   left_join(last_pts, by = c("year", "gamenumber"))
 
 
@@ -84,7 +84,17 @@ stat_per_games <- stat_per_games |>
   mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB))
 
 source("Ranking.R") 
-#creates two dataframes with statistics per team and per game/per season 
+team_stats_df <- process_team_stats_data(stat_per_games)
+team_stats_season <- calculate_team_season_stats(team_stats_df)
+#creates two dataframes with statistics per team and per game/per season
+
+#the following take the last four minutes out and create new dataframes
+#team_stats_df_37 <- process_team_stats_data(stat_per_games_last_4)
+#team_stats_season_37 <- calculate_team_season_stats(team_stats_df_37)
+#team_stats_df_4 <- process_team_stats_data(stat_per_game_first37)
+#team_stats_season_4 <- calculate_team_season_stats(team_stats_df_4)
+#creates two dataframes with statistics per team and per game/per season
+
 
 
 

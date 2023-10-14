@@ -60,21 +60,62 @@ team_stats_plot_over_years <- function(team_stats_season, variable, title, y_lab
 # Access the custom names for pp and p1 outside the function
 #print(plot_threeS_over_years)
 
-plot_effect_on_win <- function(data, variable, x_label) {
+#The following function allows to plot any graph comparing 2007-2016 to 2016-2020
+plot_separated_effect_2016 <- function(data, variable, x_label,
+                                  y_variable= winner, y_label = "Win percentage") {
   p <- ggplot(data = data) +
     geom_smooth(data = data |> filter(year >= 2007 & year <= 2015),
-                aes(x = {{ variable }}, y = winner), color = "black") +
+                aes(x = {{ variable }}, y = {{ y_variable }}), color = "black") +
     geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),
-                aes(x = {{ variable }}, y = winner), color = "blue") +
+                aes(x = {{ variable }}, y = {{ y_variable }}), color = "blue") +
     labs(title = paste("Number of", x_label, "per game"),
          subtitle = str_wrap("The points represent different games"),
-         x = x_label,  # Use the custom x_label here
-         y = "Win percentage") +
+         x = x_label,
+         y = y_label) +
     theme(legend.position = "none")
   
   return(p)
 }
 
 # Example usage:
-#p4 <- plot_effect_on_win(team_stats_df, three_attempts, "Three-point attempts")
+#p4 <- plot_separated_effect_2016(team_stats_df, three_attempts, "Three-point attempts")
+#p4
 
+# The following function just does a regression in general
+plot_effect_game <- function(data, variable, x_label,
+                        y_variable= winner, y_label = "Win percentage") {
+  p <- ggplot(data = data) +
+    geom_smooth(data = data,
+                aes(x = {{ variable }}, y = {{ y_variable }}), color = "black") +
+    labs(title = paste("Number of", x_label, "per game"),
+         subtitle = str_wrap("The points represent different games"),
+         x = x_label,
+         y = y_label) +
+    theme(legend.position = "none")
+  
+  return(p)
+}
+# Example usage:
+#p5 <- plot_effect_game(team_stats_df, three_accuracy, "Three-point attempts")
+#p5
+#p6 <- plot_effect_game(team_stats_df, three_attempts, "Three-point attempts",
+#                       Fouls_commited, "Fouls commited")
+#p6
+
+#The following function allows to plot any graph comparing the money time to the rest of the game
+
+plot_separated_effect_moneytime <- function(data, variable, x_label,
+                                            y_variable= winner, y_label = "Win percentage") {
+  p <- ggplot(data = data) +
+    geom_smooth(data = data |> filter(year >= 2007 & year <= 2015),
+                aes(x = {{ variable }}, y = {{ y_variable }}), color = "black") +
+    geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),
+                aes(x = {{ variable }}, y = {{ y_variable }}), color = "blue") +
+    labs(title = paste("Number of", x_label, "per game"),
+         subtitle = str_wrap("The points represent different games"),
+         x = x_label,
+         y = y_label) +
+    theme(legend.position = "none")
+  
+  return(p)
+}

@@ -106,18 +106,37 @@ top_winners
 grid.arrange(top_winners,p1,nrow=2)
 
 
-Effect_3Attempts_on_Win <- plot_effect_on_win(team_stats_df, 
-                                              three_attempts, 
-                                              "Three-point attempts")
+Effect_3Attempts_on_Win <- plot_separated_effect_2016(team_stats_df, 
+                                                      three_attempts, 
+                                                      "Three-point attempts")
 
 print(Effect_3Attempts_on_Win)
 
-Effect_3accuracy_on_Win <- plot_effect_on_win(team_stats_df, 
-                                              three_accuracy, 
-                                              "Three-point accuracy")
+Effect_3accuracy_on_Win <- plot_effect_game(team_stats_df, 
+                                            three_accuracy, 
+                                            "Three-point accuracy")
 
 print(Effect_3accuracy_on_Win)
 
+Effect_2Attempts_on_Win <- plot_separated_effect_2016(team_stats_df,
+                                                      two_attempts, 
+                                                      "Two-point attempts")
+
+print(Effect_2Attempts_on_Win)
+
+Effect_2accuracy_on_Win <- plot_effect_game(team_stats_df, 
+                                            two_accuracy, 
+                                            "Two-point accuracy")
+
+print(Effect_2accuracy_on_Win)
+
+#effect of the total of points made or points taken were not that interesting
+
+Effect_Foul_on_Win <- plot_effect_game(team_stats_df, 
+                                                      Fouls_commited, 
+                                                      "Fouls commited")
+
+print(Effect_Foul_on_Win)
 
 points07<- create_team_points_plot(2007)
 points08<- create_team_points_plot(2008)
