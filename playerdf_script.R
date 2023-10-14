@@ -1,16 +1,22 @@
+# Load necessary libraries
 euroleague<-read.csv("data/euroleague.csv")
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
 
+
+# Remove information in parentheses from the PLAYINFO column
 euroleague <- euroleague |>
   mutate(PLAYINFO = str_remove(PLAYINFO, "\\s*\\([^)]+\\)"))
 
+
+# Define a function to process player statistics
 PlayerFunctiondf <- function(euroleague) {
   playerdf <- euroleague |>
     filter(!is.na(PLAYER)) |>
     group_by(year, PLAYER) |>
     summarise(
+      # Calculate various statistics based on the PLAYTYPE column
       tot_point3 = sum(str_count(PLAYTYPE, "3FGM")),
       tot_point3_missed = sum(str_count(PLAYTYPE, "3FGA")),
       tot_point2 = sum(str_count(PLAYTYPE, "2FGM")),
@@ -29,10 +35,14 @@ PlayerFunctiondf <- function(euroleague) {
   
 }
 
+# Source "Main_Wrangle.R" script
 source("Main_Wrangle.R")
 
+
+# Process player statistics
 stat_per_game_player <- PlayerFunctiondf(euroleague) |>
   mutate(three_perc = tot_point3 / (tot_point3_missed+tot_point3))|>
+  # Additional data wrangling steps
   mutate(Team = toupper(Team))|>
   mutate(Team = recode(Team,
                        "ANADOLU EFES"="ANADOLU EFES ISTANBUL",
@@ -107,6 +117,8 @@ stat_per_game_player <- PlayerFunctiondf(euroleague) |>
 
 view(stat_per_game_player)
 
+
+# Function to find the top player in a given column
 find_top_player <- function(stat_per_game_player, column_name) {
   result <- stat_per_game_player |>
     group_by(year) |>
@@ -122,17 +134,21 @@ top_off_rebound <- find_top_player(stat_per_game_player, tot_OffReb)
 top2pt_scorer <- find_top_player(stat_per_game_player, tot_point2)
 
 
+# Define a function to create a ggplot visualization
 create_ggplot <- function(data, x_var, y_var, color, y_limits, title) {
   gg <- ggplot(data, aes(x = {{x_var}}, y = {{y_var}})) +
     geom_line(color = color) +
     geom_point(color = color, size = 1) +
     labs(title = title, x = "Year") +
+    # Additional plot styling
     theme_minimal() +
     scale_y_continuous(limits = y_limits) +
     scale_x_continuous(breaks = seq(min(data$year), max(data$year), by = 1))
   
   return(gg)
 }
+
+# Create various ggplot visualizations
 
 downtown <- create_ggplot(top3pt_scorer, year, 
                           tot_point3, "blue", c(0, 200), 
@@ -151,6 +167,8 @@ racket <- create_ggplot(top2pt_scorer, year,
                         "Record 2-point by Year")
 
 
+
+# Additional data processing
 df_threebad <- stat_per_game_player|>
   filter(!(is.na(three_perc) | tot_point3 == 0) & 
            (tot_point3 + tot_point3_missed) >= 70)|>
@@ -163,6 +181,7 @@ df_mean_threebad <- df_threebad |>
   summarise(mean_three_perc = mean(three_perc))
 
 
+# Function to create win percentage plots
 create_win_percentage_plot <- function(data, x_var, y_var, title) {
   p <- ggplot(data, aes(x = {{x_var}}, y = {{y_var}})) +
     geom_line() +
@@ -175,6 +194,7 @@ create_win_percentage_plot <- function(data, x_var, y_var, title) {
   return(p)
 }
 
+# Create win percentage plots
 racket_win <- create_win_percentage_plot(top2pt_scorer, year, 
                                          win_percentage, "Racket Win Percentage")
 
@@ -188,6 +208,7 @@ offreb_win <- create_win_percentage_plot(top_off_rebound, year, win_percentage,
                                          "Offensive rebound impact on winning")
 
 
+# Load gridExtra library and arrange plots for printing
 install.packages("gridExtra")
 library(gridExtra)
 
@@ -197,16 +218,19 @@ merged_threewin <- grid.arrange(downtown, three_win, ncol = 1)
 merged_defwin <- grid.arrange(def_reb, defreb_win, ncol = 1)
 merged_offwin <- grid.arrange(off_reb, offreb_win, ncol = 1)
 
+# Print arranged plots
 print(merged_threewin)
 print(merged_racketwin)
 print(merged_defwin)
 print(merged_offwin)
 
+
+# Additional ggplot visualizations
 ggplot(top3pt_scorer, aes(x = year, y = three_perc)) +
   geom_line() +         
   geom_point() +  
   labs(x = "Year", y = "3-Point Shooting Percentage") +  
-  ggtitle("3-Point Shooting Percentage Over Years") + 
+  ggtitle("3-Point Shooting Success Among Leading Scorers in the 3-Point Category Over Time") + 
   theme_minimal() +
   scale_y_continuous(limits = c(0.10,0.6)) +
   scale_x_continuous(breaks = seq(min(top3pt_scorer$year), 
