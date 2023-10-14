@@ -1,4 +1,4 @@
-#TEST GITjjlmnkémé
+#TEST GITjjlmnkéméffed
 library(tidyverse)
 
 euroleague<-read.csv("data/euroleague.csv")
