@@ -29,6 +29,8 @@ PlayerFunctiondf <- function(euroleague) {
   
 }
 
+source("Main_Wrangle.R")
+
 stat_per_game_player <- PlayerFunctiondf(euroleague) |>
   mutate(three_perc = tot_point3 / (tot_point3_missed+tot_point3))|>
   mutate(Team = toupper(Team))|>
@@ -109,7 +111,7 @@ find_top_player <- function(stat_per_game_player, column_name) {
   result <- stat_per_game_player |>
     group_by(year) |>
     filter({{column_name}} == max({{column_name}})) |>
-    slice(which.max(three_perc))|>
+    slice(1)|> # Keep only the first row if multiple players have the same max value
     ungroup()
   return(result)
 }
@@ -197,8 +199,8 @@ merged_offwin <- grid.arrange(off_reb, offreb_win, ncol = 1)
 
 print(merged_threewin)
 print(merged_racketwin)
-print(merged_shoot)
-print(merged_reb)
+print(merged_defwin)
+print(merged_offwin)
 
 ggplot(top3pt_scorer, aes(x = year, y = three_perc)) +
   geom_line() +         
