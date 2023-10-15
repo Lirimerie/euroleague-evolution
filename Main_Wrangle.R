@@ -71,6 +71,13 @@ stat_per_games <- stat_per_games |>
 stat_per_games_first37 <- stat_per_games_first37|>
   mutate(foul_relative_minutes = (tot_foul/37))
 
+stat_per_games_last_4 <- stat_per_games_last_4 |>
+  left_join(select(stat_per_games, gamenumber, year, Tot_Point_A, Tot_Point_B, winner),
+            by = c("gamenumber", "year"))
+stat_per_games_firts_37 <- stat_per_games_first_37 |>
+  left_join(select(stat_per_games, gamenumber, year, Tot_Point_A, Tot_Point_B, winner),
+            by = c("gamenumber", "year"))
+
 # Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
 last_pts <- euroleague |>
   filter(MINUTE == 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) |>
