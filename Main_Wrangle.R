@@ -74,7 +74,7 @@ stat_per_games_first37 <- stat_per_games_first37|>
 stat_per_games_last_4 <- stat_per_games_last_4 |>
   left_join(select(stat_per_games, gamenumber, year, Tot_Point_A, Tot_Point_B, winner),
             by = c("gamenumber", "year"))
-stat_per_games_firts_37 <- stat_per_games_first_37 |>
+stat_per_games_first37 <- stat_per_games_first37 |>
   left_join(select(stat_per_games, gamenumber, year, Tot_Point_A, Tot_Point_B, winner),
             by = c("gamenumber", "year"))
 
@@ -157,10 +157,10 @@ team_stats_season <- calculate_team_season_stats(team_stats_df)
 #creates two dataframes with statistics per team and per game/per season
 
 #the following take the last four minutes out and create new dataframes
-#team_stats_df_37 <- process_team_stats_data(stat_per_games_last_4)
-#team_stats_season_37 <- calculate_team_season_stats(team_stats_df_37)
-#team_stats_df_4 <- process_team_stats_data(stat_per_game_first37)
-#team_stats_season_4 <- calculate_team_season_stats(team_stats_df_4)
+team_stats_df_37 <- process_team_stats_data(stat_per_games_first37)
+team_stats_season_37 <- calculate_team_season_stats(team_stats_df_37)
+team_stats_df_4 <- process_team_stats_data(stat_per_games_last_4)
+team_stats_season_4 <- calculate_team_season_stats(team_stats_df_4)
 #creates two dataframes with statistics per team and per game/per season
 
 
