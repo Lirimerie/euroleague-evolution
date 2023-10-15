@@ -145,8 +145,6 @@ print(plot_mean_foul)
 
 source("Ranking.R") 
 
-source("playerdf_script.R")
-
 team_stats_df <- process_team_stats_data(stat_per_games)
 team_stats_season <- calculate_team_season_stats(team_stats_df)
 #creates two dataframes with statistics per team and per game/per season
@@ -159,6 +157,6 @@ team_stats_season <- calculate_team_season_stats(team_stats_df)
 #creates two dataframes with statistics per team and per game/per season
 
 
-
+source("playerdf_script.R")
 
 
