@@ -35,9 +35,6 @@ PlayerFunctiondf <- function(euroleague) {
   
 }
 
-# Source "Main_Wrangle.R" script
-source("Main_Wrangle.R")
-
 
 # Process player statistics
 stat_per_game_player <- PlayerFunctiondf(euroleague) |>
