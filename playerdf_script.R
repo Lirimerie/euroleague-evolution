@@ -110,9 +110,10 @@ stat_per_game_player <- PlayerFunctiondf(euroleague) |>
   )|>
   select(-TeamA, -TeamB) |>
   left_join(team_stats_season, by = c("year", "Team")) |>
+  mutate(avg_defreb = tot_DefReb / total_games)|>
+  mutate(avg_offreb = tot_OffReb / total_games)|>
+  mutate(avg_points = (tot_point2*2 + tot_point3*3) / total_games)|>
   filter(total_games > 10)
-
-view(stat_per_game_player)
 
 
 # Function to find the top player in a given column
@@ -164,7 +165,6 @@ racket <- create_ggplot(top2pt_scorer, year,
                         "Record 2-point by Year")
 
 
-
 # Additional data processing
 df_threebad <- stat_per_game_player|>
   filter(!(is.na(three_perc) | tot_point3 == 0) & 
@@ -191,47 +191,21 @@ create_win_percentage_plot <- function(data, x_var, y_var, title) {
   return(p)
 }
 
-# Create win percentage plots
-racket_win <- create_win_percentage_plot(top2pt_scorer, year, 
-                                         win_percentage, "Racket Win Percentage")
-
-three_win <- create_win_percentage_plot(top3pt_scorer, year, win_percentage, 
-                                        "3-pointers win percentage")
-
-defreb_win <- create_win_percentage_plot(top_def_rebound, year, win_percentage,
-                                         "Defensive rebound impact on winning")
-
-offreb_win <- create_win_percentage_plot(top_off_rebound, year, win_percentage,
-                                         "Offensive rebound impact on winning")
-
-
 # Load gridExtra library and arrange plots for printing
 install.packages("gridExtra")
 library(gridExtra)
 
 
-merged_racketwin <- grid.arrange(racket, racket_win, ncol = 1)
-merged_threewin <- grid.arrange(downtown, three_win, ncol = 1)
-merged_defwin <- grid.arrange(def_reb, defreb_win, ncol = 1)
-merged_offwin <- grid.arrange(off_reb, offreb_win, ncol = 1)
-
-# Print arranged plots
-print(merged_threewin)
-print(merged_racketwin)
-print(merged_defwin)
-print(merged_offwin)
-
-
 # Additional ggplot visualizations
 ggplot(top3pt_scorer, aes(x = year, y = three_perc)) +
-  geom_line() +         
-  geom_point() +  
-  labs(x = "Year", y = "3-Point Shooting Percentage") +  
-  ggtitle("3-Point Shooting Success Among Leading Scorers in the 3-Point Category Over Time") + 
+  geom_bar(stat = "identity") + 
+  labs(title = "3-Point Shooting Success Among Leading Scorers in the 3-Point Category Over Time",
+       x = "Year", 
+       y = "3-Point Shooting Percentage") + 
   theme_minimal() +
-  scale_y_continuous(limits = c(0.10,0.6)) +
+  scale_y_continuous(limits = c(0,1)) +
   scale_x_continuous(breaks = seq(min(top3pt_scorer$year), 
-                               max(top3pt_scorer$year), by = 1)) 
+                                  max(top3pt_scorer$year), by = 1)) 
 
 
 ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
@@ -245,3 +219,48 @@ ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
   scale_x_continuous(breaks = seq(min(df_mean_threebad$year), 
                                   max(df_mean_threebad$year), by = 1))  # Définir les étiquettes de l'axe x
 
+
+player_stats_plot_over_years <- function(stat_per_game_player, variable, title, y_label) {
+  
+  best_in_class_player <- stat_per_game_player |>
+    group_by(year) |>
+    filter({{ variable }} == max({{ variable }}, na.rm = TRUE)) |>
+    ungroup()
+  
+  p1 <- ggplot(data = stat_per_game_player) +
+    geom_point(mapping = aes(x = year, y = {{ variable }}, color = PLAYER)) +
+    geom_smooth(mapping = aes(x = year, y = {{ variable }})) +
+    labs(title = title,
+         subtitle = str_wrap("The points represent different players"),
+         x = "Season year",
+         y = y_label) +
+    theme(legend.position = "none")
+  
+  p2 <- ggplot(best_in_class_player, aes(x = year, y = win_percentage)) +
+    geom_line() +
+    geom_point(mapping = aes(x= year, y = win_percentage)) +
+    labs(title = "Win percentage of the best statistic player's team",
+         x = "Season year",
+         y = "Win percentage") +
+    ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team),
+                              data = best_in_class_player,
+                              box.padding = 0.4,
+                              size = 1.5) +
+    theme(legend.position = "none")
+  
+  merged <- grid.arrange(p1, p2, ncol = 1)
+  print(merged)
+}
+
+AvgDefReb_plot <- player_stats_plot_over_years(stat_per_game_player, avg_defreb,
+                                    "Average Defensive Rebound by Player",
+                                    "Number of Rebound")
+
+AvgOffReb_plot <- player_stats_plot_over_years(stat_per_game_player, avg_offreb,
+                                               "Average Offensive Rebound by Player",
+                                               "Number of Rebound")
+
+AvgNumPts_plot <- player_stats_plot_over_years(stat_per_game_player, avg_points,
+                                               "Average Number of Points Scored by Player",
+                                               "Number of points")
+  
