@@ -6,21 +6,23 @@ source("Function.R")
 #Statistics per team about three pointers
 plots <- team_stats_plot_over_years(team_stats_season,average_threeS,
                                     "Average of three pointer made per game",
-                                    "Average Three pointer made by the team",
+                                    "Average Three pointer made by a team in a season",
                                     "plot_threeS_over_years"
                                     )
+plot_threeS_over_years <- plot_threeS_over_years +
+  labs(subtitle = "this is a test")
 print(plot_threeS_over_years)
 
 plots <- team_stats_plot_over_years(team_stats_season,average_three_attempts,
                                     "Average of three pointer attempted per game",
-                                    "Average Three pointer made by the team",
+                                    "Average Three pointer attempted by the team",
                                     "plot_three_attempts_over_years"
 )
 print(plot_three_attempts_over_years)
 
 plots <- team_stats_plot_over_years(team_stats_season,avg_3pt_accuracy,
                                     "Average accuracy of three per game",
-                                    "Average accruracy of three pointers",
+                                    "Average accuracy of a team while shooting three pointers",
                                     "plot_three_accuracy_over_years"
 )
 print(plot_three_accuracy_over_years)
@@ -35,14 +37,14 @@ print(plot_twoS_over_years)
 
 plots <- team_stats_plot_over_years(team_stats_season,average_two_attempts,
                                     "Average of two pointer attempted per game",
-                                    "Average two pointer made by the team",
+                                    "Average two pointer attempted by a team",
                                     "plot_two_attempts_over_years"
 )
 print(plot_two_attempts_over_years)
 
 plots <- team_stats_plot_over_years(team_stats_season,avg_2pt_accuracy,
                                     "Average accuracy of two per game",
-                                    "Average accruracy of two pointers",
+                                    "Average accuracy of two pointers",
                                     "plot_two_accuracy_over_years"
 )
 print(plot_two_accuracy_over_years)
@@ -108,25 +110,44 @@ grid.arrange(top_winners,p1,nrow=2)
 
 Effect_3Attempts_on_Win <- plot_separated_effect_2016(team_stats_df, 
                                                       three_attempts, 
-                                                      "Three-point attempts")
+                                                      "Three-point attempts")+
+  coord_cartesian( ylim = c(0.2, 0.8))
 
 print(Effect_3Attempts_on_Win)
 
+
+Effect_3Attempts_on_Win_first37 <- plot_separated_effect_2016(team_stats_df_37, 
+                                                              three_attempts, 
+                                                              "Three-point attempts in the first 37 minutes of the game")
+Effect_3Attempts_on_Win_first37 <- Effect_3Attempts_on_Win_first37 +
+  coord_cartesian(xlim = c(10,30), ylim = c(0.2, 0.8))
+print(Effect_3Attempts_on_Win_first37)
+
+Effect_3Attempts_on_Win_last_4 <- plot_separated_effect_2016(team_stats_df_4, 
+                                                              three_attempts, 
+                                                              "Three-point attempts in the last 4 minutes of the game")+
+  coord_cartesian(xlim = c(0,9), ylim = c(0.2, 0.8))
+
+print(Effect_3Attempts_on_Win_last_4)
+
 Effect_3accuracy_on_Win <- plot_effect_game(team_stats_df, 
                                             three_accuracy, 
-                                            "Three-point accuracy")
+                                            "Three-point accuracy") +
+  coord_cartesian( xlim= c(0.1,0.6), ylim = c(0, 1))
 
 print(Effect_3accuracy_on_Win)
 
 Effect_2Attempts_on_Win <- plot_separated_effect_2016(team_stats_df,
                                                       two_attempts, 
-                                                      "Two-point attempts")
+                                                      "Two-point attempts")+
+  coord_cartesian(ylim = c(0.2, 0.8))
 
 print(Effect_2Attempts_on_Win)
 
 Effect_2accuracy_on_Win <- plot_effect_game(team_stats_df, 
                                             two_accuracy, 
-                                            "Two-point accuracy")
+                                            "Two-point accuracy")+
+  coord_cartesian( xlim = c(0.3, 0.75), ylim = c(0,1))
 
 print(Effect_2accuracy_on_Win)
 
@@ -134,9 +155,75 @@ print(Effect_2accuracy_on_Win)
 
 Effect_Foul_on_Win <- plot_effect_game(team_stats_df, 
                                                       Fouls_commited, 
-                                                      "Fouls commited")
+                                                      "Fouls commited")+
+  coord_cartesian(ylim = c(0.2, 0.8))
 
 print(Effect_Foul_on_Win)
+
+Effect_Foul_on_Win_last_4 <- plot_effect_game(team_stats_df_4, 
+                                       Fouls_commited, 
+                                       "Fouls commited in the last four minutes")+
+  coord_cartesian(xlim = c(0,8), ylim = c(0.1, 0.9))
+
+print(Effect_Foul_on_Win_last_4)
+
+Effect_Foul_on_Gap_last_4 <- plot_effect_game(team_stats_df_4, 
+                                              Fouls_commited, 
+                                              "Fouls commited in the last four minutes",
+                                              Variation_Of_Gap,
+                                              "change in difference of points")+
+  coord_cartesian()
+
+print(Effect_Foul_on_Gap_last_4)
+
+Effect_Foul_on_Gap_last_4_not_Desperate <- plot_effect_game(team_stats_df_4_not_desperate,
+                                                            Fouls_commited, 
+                                                            "Fouls commited in the last four minutes",
+                                                            Variation_Of_Gap,
+                                                            "change in difference of points")+
+                                              coord_cartesian()
+
+print(Effect_Foul_on_Gap_last_4_not_Desperate)
+
+
+
+Effect_Three_accuracy_on_Gap_last_4_not_Desperate <- plot_effect_game(team_stats_df_4_not_desperate,
+                                                            three_accuracy, 
+                                                            "Three accu commited in the last four minutes",
+                                                            Variation_Of_Gap,
+                                                            "change in difference of points")+
+  coord_cartesian()+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red")+
+
+print(Effect_Three_accuracy_on_Gap_last_4_not_Desperate)
+
+print(intersection_x)
+
+Effect_Three_attempts_on_Gap_last_4_not_Desperate <- plot_effect_game(team_stats_df_4_not_desperate,
+                                                                      three_attempts, 
+                                                                      "Three attempts commited in the last four minutes",
+                                                                      Variation_Of_Gap,
+                                                                      "change in difference of points")+
+  coord_cartesian()
+
+print(Effect_Three_attempts_on_Gap_last_4_not_Desperate)
+
+Effect_Three_made_on_Gap_last_4_not_Desperate <- plot_effect_game(team_stats_df_4_not_desperate,
+                                                                      ThreeS, 
+                                                                      "Three made commited in the last four minutes",
+                                                                      Variation_Of_Gap,
+                                                                      "change in difference of points")+
+  coord_cartesian()
+
+print(Effect_Three_made_on_Gap_last_4_not_Desperate)
+
+Effect_Gap_on_Win <- plot_effect_game(team_stats_df_4,
+                                      Variation_Of_Gap,
+                                      "change in difference of points")+
+                                                                  
+  coord_cartesian()
+
+print(Effect_Gap_on_Win)
 
 points07<- create_team_points_plot(2007)
 points08<- create_team_points_plot(2008)
@@ -159,3 +246,4 @@ grid.arrange(points07, points08, points09, points10, ncol = 2)
 grid.arrange(points11, points12, points13, points14, ncol = 2)
 grid.arrange(points15, points16, points17, points18, ncol = 2)
 grid.arrange(points19, points20, ncol = 2)
+

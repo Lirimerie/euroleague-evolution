@@ -18,8 +18,7 @@ create_team_points_plot <- function(Year) {
          x = "Team",
          y = "Average Points",
          fill = "") +
-    theme(axis.text.x = element_text(angle = 40, hjust = 1)
-    )
+    theme(axis.text.x = element_text(angle = 40, hjust = 1))
   
   return(plot)
 }
@@ -34,15 +33,18 @@ team_stats_plot_over_years <- function(team_stats_season, variable, title, y_lab
     geom_point(mapping = aes(x = year, y = {{ variable }}, color = Team)) +
     geom_smooth(mapping = aes(x = year, y = {{ variable }})) +
     labs(title = title,
-         subtitle = str_wrap("The points represent different teams"),
          x = "Season year",
          y = y_label) +
-    ggrepel::geom_label_repel(aes(x = year, y = {{ variable }}, label = Team),
-                              data = best_in_class,
-                              box.padding = 0.6,
-                              size = 2.3) +
-    theme(legend.position = "none")
-  
+    geom_label_repel(aes(x = year, y = {{ variable }}, label = Team),
+                     data = best_in_class,
+                     box.padding = 0.6,
+                     size = 2.3) +
+    theme(legend.position = "none",
+          panel.background = element_rect(fill = "white"),
+          panel.grid = element_line(color = "gray80", size = 0.2)
+          )
+  #For some reasons, didn't work calling theme_minimal()
+                              
   # Assign the plots to custom names
   assign(plot_name, p1, envir = .GlobalEnv)
   
@@ -69,10 +71,12 @@ plot_separated_effect_2016 <- function(data, variable, x_label,
     geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),
                 aes(x = {{ variable }}, y = {{ y_variable }}), color = "blue") +
     labs(title = paste("Number of", x_label, "per game"),
-         subtitle = str_wrap("The points represent different games"),
+         subtitle = str_wrap("The curve represents the probability to win"),
          x = x_label,
          y = y_label) +
-    theme(legend.position = "none")
+    scale_color_manual(values = c("Before 2016" = "black", "After 2016" = "blue")) +  # Set line colors
+    theme(legend.position = "bottom") +
+    theme_minimal()
   
   return(p)
 }
@@ -84,14 +88,18 @@ plot_separated_effect_2016 <- function(data, variable, x_label,
 # The following function just does a regression in general
 plot_effect_game <- function(data, variable, x_label,
                         y_variable= winner, y_label = "Win percentage") {
+  label_text = "General trend over the years"
   p <- ggplot(data = data) +
     geom_smooth(data = data,
-                aes(x = {{ variable }}, y = {{ y_variable }}), color = "black") +
+                aes(x = {{ variable }}, y = {{ y_variable }}),
+                color = "black",label = label_text) +
     labs(title = paste("Number of", x_label, "per game"),
-         subtitle = str_wrap("The points represent different games"),
+         subtitle = str_wrap("The curve represents the probability to win"),
          x = x_label,
          y = y_label) +
-    theme(legend.position = "none")
+    theme(legend.position = "bottom") +
+ # coord_cartesian( ylim = c(0, 1)) +
+    theme_minimal()
   
   return(p)
 }
@@ -101,21 +109,3 @@ plot_effect_game <- function(data, variable, x_label,
 #p6 <- plot_effect_game(team_stats_df, three_attempts, "Three-point attempts",
 #                       Fouls_commited, "Fouls commited")
 #p6
-
-#The following function allows to plot any graph comparing the money time to the rest of the game
-
-plot_separated_effect_moneytime <- function(data, variable, x_label,
-                                            y_variable= winner, y_label = "Win percentage") {
-  p <- ggplot(data = data) +
-    geom_smooth(data = data |> filter(year >= 2007 & year <= 2015),
-                aes(x = {{ variable }}, y = {{ y_variable }}), color = "black") +
-    geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),
-                aes(x = {{ variable }}, y = {{ y_variable }}), color = "blue") +
-    labs(title = paste("Number of", x_label, "per game"),
-         subtitle = str_wrap("The points represent different games"),
-         x = x_label,
-         y = y_label) +
-    theme(legend.position = "none")
-  
-  return(p)
-}

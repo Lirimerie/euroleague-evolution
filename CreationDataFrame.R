@@ -169,3 +169,27 @@ CreationDataFrame_37 <- function(euroleague) {
   
   return(stat_per_games)
 }
+
+uniformisation <- function(data){
+  data <- data|>
+    mutate(TwoS_A = coalesce(TwoS_A,0) + coalesce(DUNK_A,0) + coalesce(LUS_A,0),
+           TwoS_B = coalesce(TwoS_B,0) + coalesce(DUNK_B,0) + coalesce(LUS_B,0),
+           TwoF_A = coalesce(TwoF_A,0) + coalesce(LUF_A,0),
+           TwoF_B = coalesce(TwoF_B,0) + coalesce(LUF_B,0),
+           ThreeS_A = coalesce(ThreeS_A,0),
+           ThreeS_B = coalesce(ThreeS_B,0),
+           ThreeF_A = coalesce(ThreeF_A,0),
+           ThreeF_B = coalesce(ThreeF_B,0),
+           FTS_A = coalesce(FTS_A,0),
+           FTS_B = coalesce(FTS_B,0),
+           FTF_A = coalesce(FTF_A,0),
+           FTF_B = coalesce(FTF_B,0),
+           Off_Reb_A = coalesce(Off_Reb_A,0) ,
+           Off_Reb_B = coalesce(Off_Reb_B,0) ,
+           Deff_Reb_A = coalesce(Deff_Reb_A,0),
+           Deff_Reb_B = coalesce(Deff_Reb_B,0),
+           Foul_commited_A = coalesce(Foul_commited_A,0),
+           Foul_commited_B = coalesce(Foul_commited_B,0)
+           )|>
+    select(-LUF_A,-LUF_B,-LUS_A,-LUS_B,-DUNK_A,-DUNK_B)
+}

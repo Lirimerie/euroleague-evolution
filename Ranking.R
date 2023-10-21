@@ -44,21 +44,6 @@ process_team_stats_data <- function(data) {
         Team_Type == "TeamB" ~ FTF_B,
         TRUE ~ NA_real_
       ),
-      LUS = case_when(
-        Team_Type == "TeamA" ~ LUS_A,
-        Team_Type == "TeamB" ~ LUS_B,
-        TRUE ~ NA_real_
-      ),
-      LUF = case_when(
-        Team_Type == "TeamA" ~ LUF_A,
-        Team_Type == "TeamB" ~ LUF_B,
-        TRUE ~ NA_real_
-      ),
-      Dunk = case_when(
-        Team_Type == "TeamA" ~ DUNK_A,
-        Team_Type == "TeamB" ~ DUNK_B,
-        TRUE ~ NA_real_
-      ),
       Off_Reb = case_when(
         Team_Type == "TeamA" ~ Off_Reb_A,
         Team_Type == "TeamB" ~ Off_Reb_B,
@@ -73,9 +58,39 @@ process_team_stats_data <- function(data) {
         Team_Type == "TeamA" ~ Foul_commited_A,
         Team_Type == "TeamB" ~ Foul_commited_B,
         TRUE ~ NA_real_
+      ),
+      Diff_Points_End = case_when(
+        Team_Type == "TeamA" ~ ifelse(Tot_Point_A > Tot_Point_B,
+                                      Total_Difference, -Total_Difference),
+        Team_Type == "TeamB" ~ ifelse(Tot_Point_B > Tot_Point_A,
+                                      Total_Difference, -Total_Difference),
+        TRUE ~ NA_real_
       )
     ) |>
-    select(-Tot_Point_A, -Tot_Point_B, -ThreeS_A, -ThreeS_B, -ThreeF_A, -ThreeF_B, -TwoS_A, -TwoS_B, -TwoF_A, -TwoF_B, -FTS_A, -FTS_B, -FTF_A, -FTF_B, -LUS_A, -LUS_B, -LUF_A, -LUF_B, -DUNK_A, -DUNK_B, -Off_Reb_A, -Off_Reb_B, -Deff_Reb_A, -Deff_Reb_B, -Team_Type, -Foul_commited_A, -Foul_commited_B) |>
+    select(-ThreeS_A, -ThreeS_B,
+           -ThreeF_A, -ThreeF_B, -TwoS_A, -TwoS_B, -TwoF_A,
+           -TwoF_B, -FTS_A, -FTS_B, -FTF_A, -FTF_B, -Off_Reb_A,
+           -Off_Reb_B, -Deff_Reb_A, -Deff_Reb_B,
+           -Foul_commited_A, -Foul_commited_B)
+  if ("pts_A" %in% colnames(data)) {
+    processed_data <- processed_data |>
+      mutate(
+        Points_35_first_min = case_when(
+          Team_Type == "TeamA" ~ pts_A,
+          Team_Type == "TeamB" ~ pts_B,
+          TRUE ~ NA_real_
+        ),
+        Diff_Points_Min_35 = case_when(
+          Team_Type == "TeamA" ~ pts_A - pts_B,
+          Team_Type == "TeamB" ~ pts_B - pts_A,
+          TRUE ~ NA_real_
+        ),
+        Variation_Of_Gap = Diff_Points_End - Diff_Points_Min_35
+      )  |>
+      select(-pts_A, -pts_B)
+  } 
+  processed_data <- processed_data |>
+    select(-Team_Type,-Tot_Point_A, -Tot_Point_B)|>  
     mutate(Team = recode(Team,
                           "ANADOLU EFES"="ANADOLU EFES ISTANBUL",
                           "ARIS TT BANK" = "ARIS THESSALONIKI",
@@ -174,9 +189,6 @@ calculate_team_season_stats <- function(data) {
       average_twoF = mean(TwoF),
       average_FTS = mean(FTS),
       average_FTF = mean(FTF),
-      average_LUS = mean(LUS),
-      average_LUF = mean(LUF),
-      average_dunk = mean(Dunk),
       win_percentage = mean(winner),
       avg_3pt_accuracy = mean(three_accuracy),
       avg_2pt_accuracy = mean(two_accuracy),
@@ -195,7 +207,6 @@ calculate_team_season_stats <- function(data) {
 
 # Example of usage
 #team_stats_season <- calculate_team_season_stats(team_stats_df)
-
 
 
 
