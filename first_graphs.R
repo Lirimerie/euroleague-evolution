@@ -4,26 +4,33 @@ library(ggrepel)
 library(gridExtra)
 source("Function.R")
 #Statistics per team about three pointers
-plots <- team_stats_plot_over_years(team_stats_season,average_threeS,
-                                    "Average of three pointer made per game",
-                                    "Average Three pointer made by a team in a season",
-                                    "plot_threeS_over_years"
+plots <- 
+  team_stats_plot_over_years(team_stats_season,
+                             average_threeS,
+                             "Average of three pointer made per game",
+                             "Average Three pointer made by a team in a season",
+                             "plot_threeS_over_years"
                                     )
 plot_threeS_over_years <- plot_threeS_over_years +
   labs(subtitle = "this is a test")
 print(plot_threeS_over_years)
 
-plots <- team_stats_plot_over_years(team_stats_season,average_three_attempts,
-                                    "Average of three pointer attempted per game",
-                                    "Average Three pointer attempted by the team",
-                                    "plot_three_attempts_over_years"
+plots <- 
+  team_stats_plot_over_years(team_stats_season,
+                             average_three_attempts,
+                             "Average of three pointer attempted per game",
+                             "Average Three pointer attempted by the team",
+                             "plot_three_attempts_over_years"
 )
 print(plot_three_attempts_over_years)
 
-plots <- team_stats_plot_over_years(team_stats_season,avg_3pt_accuracy,
-                                    "Average accuracy of three per game",
-                                    "Average accuracy of a team while shooting three pointers",
-                                    "plot_three_accuracy_over_years"
+plots <- 
+  team_stats_plot_over_years(
+    team_stats_season,
+    avg_3pt_accuracy,
+    "Average accuracy of three per game",
+    "Average accuracy of a team while shooting three pointers",
+    "plot_three_accuracy_over_years"
 )
 print(plot_three_accuracy_over_years)
 
@@ -93,7 +100,8 @@ top_teams <- team_stats_season |>
   slice_head(n = 3)
 
 # Créez le graphique à barres et ajoutez le texte des noms d'équipe en position verticale
-top_winners<-ggplot(top_teams, aes(x = as.factor(year), y = win_percentage, fill = Team)) +
+top_winners<-ggplot(top_teams, aes(x = as.factor(year),
+                                   y = win_percentage, fill = Team)) +
   geom_bar(stat = "identity", position = "dodge") +
   geom_text(aes(label = Team), position = position_dodge(width = 0.9),
             angle = 90, hjust = 1, vjust = 0.5) + # Rotation et ajustements
@@ -116,16 +124,21 @@ Effect_3Attempts_on_Win <- plot_separated_effect_2016(team_stats_df,
 print(Effect_3Attempts_on_Win)
 
 
-Effect_3Attempts_on_Win_first37 <- plot_separated_effect_2016(team_stats_df_37, 
-                                                              three_attempts, 
-                                                              "Three-point attempts in the first 37 minutes of the game")
+Effect_3Attempts_on_Win_first37 <-
+  plot_separated_effect_2016(
+    team_stats_df_37,
+    three_attempts,
+    "Three-point attempts in the first 37 minutes of the game")
+
 Effect_3Attempts_on_Win_first37 <- Effect_3Attempts_on_Win_first37 +
   coord_cartesian(xlim = c(10,30), ylim = c(0.2, 0.8))
 print(Effect_3Attempts_on_Win_first37)
 
-Effect_3Attempts_on_Win_last_4 <- plot_separated_effect_2016(team_stats_df_4, 
-                                                              three_attempts, 
-                                                              "Three-point attempts in the last 4 minutes of the game")+
+Effect_3Attempts_on_Win_last_4 <-
+  plot_separated_effect_2016(
+    team_stats_df_4,
+    three_attempts,
+    "Three-point attempts in the last 4 minutes of the game")+
   coord_cartesian(xlim = c(0,9), ylim = c(0.2, 0.8))
 
 print(Effect_3Attempts_on_Win_last_4)
@@ -160,59 +173,63 @@ Effect_Foul_on_Win <- plot_effect_game(team_stats_df,
 
 print(Effect_Foul_on_Win)
 
-Effect_Foul_on_Win_last_4 <- plot_effect_game(team_stats_df_4, 
-                                       Fouls_commited, 
-                                       "Fouls commited in the last four minutes")+
+Effect_Foul_on_Win_last_4 <- 
+  plot_effect_game(team_stats_df_4,
+                   Fouls_commited,
+                   "Fouls commited in the last four minutes")+
   coord_cartesian(xlim = c(0,8), ylim = c(0.1, 0.9))
 
 print(Effect_Foul_on_Win_last_4)
 
-Effect_Foul_on_Gap_last_4 <- plot_effect_game(team_stats_df_4, 
-                                              Fouls_commited, 
-                                              "Fouls commited in the last four minutes",
-                                              Variation_Of_Gap,
-                                              "change in difference of points")+
-  coord_cartesian()
+Effect_Foul_on_Gap_last_4 <- 
+  plot_effect_game(team_stats_df_4,
+                   Fouls_commited,
+                   "Fouls commited in the last four minutes",
+                   Variation_Of_Gap,
+                   "change in difference of points")+coord_cartesian()
 
 print(Effect_Foul_on_Gap_last_4)
 
-Effect_Foul_on_Gap_last_4_not_Desperate <- plot_effect_game(team_stats_df_4_not_desperate,
-                                                            Fouls_commited, 
-                                                            "Fouls commited in the last four minutes",
-                                                            Variation_Of_Gap,
-                                                            "change in difference of points")+
-                                              coord_cartesian()
+Effect_Foul_on_Gap_last_4_not_Desperate <-
+  plot_effect_game(team_stats_df_4_not_desperate,
+                   Fouls_commited,
+                   "Fouls commited in the last four minutes",
+                   Variation_Of_Gap,"change in difference of points")+
+  coord_cartesian()
 
 print(Effect_Foul_on_Gap_last_4_not_Desperate)
 
 
 
-Effect_Three_accuracy_on_Gap_last_4_not_Desperate <- plot_effect_game(team_stats_df_4_not_desperate,
-                                                            three_accuracy, 
-                                                            "Three accu commited in the last four minutes",
-                                                            Variation_Of_Gap,
-                                                            "change in difference of points")+
+Effect_Three_accuracy_on_Gap_last_4_not_Desperate <- 
+  plot_effect_game(team_stats_df_4_not_desperate,
+                   three_accuracy,
+                   "Three accu commited in the last four minutes",
+                   Variation_Of_Gap,
+                   "change in difference of points")+
   coord_cartesian()+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "red")+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red")
 
 print(Effect_Three_accuracy_on_Gap_last_4_not_Desperate)
 
 print(intersection_x)
 
-Effect_Three_attempts_on_Gap_last_4_not_Desperate <- plot_effect_game(team_stats_df_4_not_desperate,
-                                                                      three_attempts, 
-                                                                      "Three attempts commited in the last four minutes",
-                                                                      Variation_Of_Gap,
-                                                                      "change in difference of points")+
+Effect_Three_attempts_on_Gap_last_4_not_Desperate <- 
+  plot_effect_game(team_stats_df_4_not_desperate,
+                   three_attempts,
+                   "Three attempts commited in the last four minutes",
+                   Variation_Of_Gap,
+                   "change in difference of points")+
   coord_cartesian()
 
 print(Effect_Three_attempts_on_Gap_last_4_not_Desperate)
 
-Effect_Three_made_on_Gap_last_4_not_Desperate <- plot_effect_game(team_stats_df_4_not_desperate,
-                                                                      ThreeS, 
-                                                                      "Three made commited in the last four minutes",
-                                                                      Variation_Of_Gap,
-                                                                      "change in difference of points")+
+Effect_Three_made_on_Gap_last_4_not_Desperate <-
+  plot_effect_game(team_stats_df_4_not_desperate,
+                   ThreeS,
+                   "Three made commited in the last four minutes",
+                   Variation_Of_Gap,
+                   "change in difference of points")+
   coord_cartesian()
 
 print(Effect_Three_made_on_Gap_last_4_not_Desperate)
@@ -247,3 +264,80 @@ grid.arrange(points11, points12, points13, points14, ncol = 2)
 grid.arrange(points15, points16, points17, points18, ncol = 2)
 grid.arrange(points19, points20, ncol = 2)
 
+
+
+
+
+p1 <- ggplot(data = stat_per_games_last_4) +
+  geom_point(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
+             aes(x = absolute_diff_points, y = tot_foul)) +
+  geom_smooth(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
+              aes(x = absolute_diff_points, y = tot_foul)) +
+  theme(legend.position = "none")
+p1
+
+
+
+
+
+plot_foul<- ggplot(data = stat_per_games_last_4) +
+  geom_point(data = subset(stat_per_games_last_4,
+                           absolute_diff_points < 25 &
+                             absolute_diff_points > 10),
+             aes(x = absolute_diff_points, y = tot_foul,
+                 color = ifelse((Foul_commited_A >Foul_commited_B &
+                                   pts_A < pts_B) |
+                                  (Foul_commited_B > Foul_commited_A &
+                                     pts_B < pts_A), "red", "black"))) +
+  geom_smooth(data = subset(stat_per_games_last_4, absolute_diff_points < 25),
+              aes(x = absolute_diff_points, y = tot_foul), color = "blue") +
+  theme(legend.position = "none") +
+  scale_color_identity()
+plot_foul
+
+
+
+
+mean_foul_relative_minutes_first37 <- 
+  mean(stat_per_games_first37$foul_relative_minutes, na.rm = TRUE)
+mean_foul_relative_minutes_last4_serré <- 
+  mean(stat_per_games_last_4$foul_relative_minutes
+       [stat_per_games_last_4$absolute_diff_points < 15],
+       na.rm = TRUE)
+mean_foul_relative_minutes_last4_pas_serré <-
+  mean(stat_per_games_last_4$foul_relative_minutes
+       [stat_per_games_last_4$absolute_diff_points >= 15], 
+       na.rm = TRUE)
+df <- data.frame(Dataset = c("first_part_game", "tight_game", "non_tight_game"),
+                 MeanFoulRelativeMinutes = 
+                   c(mean_foul_relative_minutes_first37,
+                     mean_foul_relative_minutes_last4_serré,
+                     mean_foul_relative_minutes_last4_pas_serré))
+p2 <- ggplot(data = df, aes(x = Dataset,
+                            y = MeanFoulRelativeMinutes, fill = Dataset)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("first_part_game" = "blue",
+                               "tight_game" = "red",
+                               "non_tight_game" = "lightcoral"),
+                    labels = c("first_part_game" = "first_part_game",
+                               "tight_game" = "tight_game",
+                               "non_tight_game" = "non_tight_game"))+
+  theme(legend.position = "bottom") +
+  ylab("Mean Foul Relative Minutes") +
+  xlab(NULL)
+p2
+
+subset_data <- subset(stat_per_games_last_4, absolute_diff_points <= 15)
+
+# Calculer la moyenne de looser_foul et winner_foul dans les données filtrées
+mean_looser_foul <- mean(subset_data$looser_foul, na.rm = TRUE)
+mean_winner_foul <- mean(subset_data$winner_foul, na.rm = TRUE)
+labels <- c("Looser", "Winner")
+
+plot_mean_foul <- ggplot(data = NULL, aes(x = labels)) +
+  geom_bar(stat = "identity", aes(y = c(mean_looser_foul, mean_winner_foul)),
+           fill = c("red", "blue")) +
+  labs(y = "Moyenne des Foul",
+       title = "Moyenne des Foul pour Looser et Winner") +
+  theme(axis.text.x = element_blank())  # Pour masquer les étiquettes de l'axe x
+print(plot_mean_foul)

@@ -54,19 +54,32 @@ CreationDataFrameTEST <- function(euroleague) {
       TeamB = first(TeamB)
     )
   
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGM", "ThreeS", "ThreeS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGA", "ThreeF", "ThreeF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGM", "TwoS", "TwoS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGA", "TwoF", "TwoF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTM", "FTS", "FTS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTA", "FTF", "FTF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPMD", "LUS", "LUS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPATT", "LUF", "LUF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "DUNK", "DUNK", "DUNK")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "O", "Off_Reb", "Off_Reb")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "D", "Deff_Reb", "Deff_Reb")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "CM", "Foul_commited", "Foul_commited")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "RV", "Foul_Drawn", "Foul_Drawn")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "3FGM", "ThreeS", "ThreeS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "3FGA", "ThreeF", "ThreeF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "2FGM", "TwoS", "TwoS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "2FGA", "TwoF", "TwoF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "FTM", "FTS", "FTS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "FTA", "FTF", "FTF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "LAYUPMD", "LUS", "LUS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "LAYUPATT", "LUF", "LUF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "DUNK", "DUNK", "DUNK")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "O", "Off_Reb", "Off_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "D", "Deff_Reb", "Deff_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "CM", "Foul_commited", "Foul_commited")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "RV", "Foul_Drawn", "Foul_Drawn")
 
   
   return(stat_per_games)
@@ -77,7 +90,7 @@ CreationDataFrameTEST <- function(euroleague) {
 CreationDataFrame_last4 <- function(euroleague) {
   # Filtrer les données où les valeurs de la colonne "minute" sont supérieures à 35
   euroleague <- euroleague %>%
-    filter(MINUTE > 35)
+    filter(MINUTE > 36)
   
   # Ensuite, vous pouvez continuer avec le reste du traitement
   stat_per_games <- euroleague %>%
@@ -100,19 +113,32 @@ CreationDataFrame_last4 <- function(euroleague) {
       TeamB = first(TeamB),
     )
   
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGM", "ThreeS", "ThreeS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGA", "ThreeF", "ThreeF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGM", "TwoS", "TwoS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGA", "TwoF", "TwoF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTM", "FTS", "FTS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTA", "FTF", "FTF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPMD", "LUS", "LUS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPATT", "LUF", "LUF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "DUNK", "DUNK", "DUNK")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "O", "Off_Reb", "Off_Reb")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "D", "Deff_Reb", "Deff_Reb")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "CM", "Foul_commited", "Foul_commited")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "RV", "Foul_Drawn", "Foul_Drawn")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "3FGM", "ThreeS", "ThreeS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "3FGA", "ThreeF", "ThreeF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "2FGM", "TwoS", "TwoS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "2FGA", "TwoF", "TwoF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "FTM", "FTS", "FTS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "FTA", "FTF", "FTF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "LAYUPMD", "LUS", "LUS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "LAYUPATT", "LUF", "LUF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "DUNK", "DUNK", "DUNK")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "O", "Off_Reb", "Off_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "D", "Deff_Reb", "Deff_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "CM", "Foul_commited", "Foul_commited")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "RV", "Foul_Drawn", "Foul_Drawn")
   
   
   return(stat_per_games)
@@ -127,7 +153,7 @@ CreationDataFrame_last4 <- function(euroleague) {
 CreationDataFrame_37 <- function(euroleague) {
   # Filtrer les données où les valeurs de la colonne "minute" sont supérieures à 35
   euroleague <- euroleague %>%
-    filter(MINUTE <= 35)
+    filter(MINUTE <= 36)
   
   # Ensuite, vous pouvez continuer avec le reste du traitement
   stat_per_games <- euroleague %>%
@@ -150,19 +176,32 @@ CreationDataFrame_37 <- function(euroleague) {
       TeamB = first(TeamB),
     )
   
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGM", "ThreeS", "ThreeS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "3FGA", "ThreeF", "ThreeF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGM", "TwoS", "TwoS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "2FGA", "TwoF", "TwoF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTM", "FTS", "FTS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "FTA", "FTF", "FTF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPMD", "LUS", "LUS")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "LAYUPATT", "LUF", "LUF")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "DUNK", "DUNK", "DUNK")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "O", "Off_Reb", "Off_Reb")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "D", "Deff_Reb", "Deff_Reb")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "CM", "Foul_commited", "Foul_commited")
-  stat_per_games <- process_playtype(euroleague, stat_per_games, "RV", "Foul_Drawn", "Foul_Drawn")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "3FGM", "ThreeS", "ThreeS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "3FGA", "ThreeF", "ThreeF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "2FGM", "TwoS", "TwoS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "2FGA", "TwoF", "TwoF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "FTM", "FTS", "FTS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "FTA", "FTF", "FTF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "LAYUPMD", "LUS", "LUS")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "LAYUPATT", "LUF", "LUF")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "DUNK", "DUNK", "DUNK")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "O", "Off_Reb", "Off_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "D", "Deff_Reb", "Deff_Reb")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "CM", "Foul_commited", "Foul_commited")
+  stat_per_games <- process_playtype(euroleague, stat_per_games,
+                                     "RV", "Foul_Drawn", "Foul_Drawn")
   
   
   return(stat_per_games)

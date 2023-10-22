@@ -1,7 +1,8 @@
 
 process_team_stats_data <- function(data) {
   processed_data <- data |>
-    pivot_longer(cols = c(TeamA, TeamB), names_to = "Team_Type", values_to = "Team") |>
+    pivot_longer(cols = c(TeamA, TeamB), names_to = "Team_Type",
+                 values_to = "Team") |>
     mutate(winner = ifelse(winner == Team, 1, 0)) |>
     mutate(
       Tot_Points = case_when(

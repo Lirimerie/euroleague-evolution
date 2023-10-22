@@ -11,10 +11,12 @@ create_team_points_plot <- function(Year) {
   plot <- ggplot(combined_teams, 
                  aes(x = reorder(Team, -average_points),
                      y = average_points, 
-                     fill = ifelse(rank(average_points) <= 5, "Bottom 5", "Top 5"))) +
+                     fill = ifelse(rank(average_points) <= 5,
+                                   "Bottom 5", "Top 5"))) +
     geom_bar(stat = "identity") +
     scale_fill_manual(values = c("Top 5" = "green", "Bottom 5" = "red")) +
-    labs(title = paste("Top 5 and Bottom 5 Teams in", Year, "by Average Points"),
+    labs(title = paste("Top 5 and Bottom 5 Teams in",
+                       Year, "by Average Points"),
          x = "Team",
          y = "Average Points",
          fill = "") +
@@ -22,7 +24,11 @@ create_team_points_plot <- function(Year) {
   
   return(plot)
 }
-team_stats_plot_over_years <- function(team_stats_season, variable, title, y_label, plot_name) {
+team_stats_plot_over_years <- function(team_stats_season,
+                                       variable,
+                                       title,
+                                       y_label,
+                                       plot_name) {
   
   best_in_class <- team_stats_season |>
     group_by(year) |>
@@ -63,18 +69,26 @@ team_stats_plot_over_years <- function(team_stats_season, variable, title, y_lab
 #print(plot_threeS_over_years)
 
 #The following function allows to plot any graph comparing 2007-2016 to 2016-2020
-plot_separated_effect_2016 <- function(data, variable, x_label,
-                                  y_variable= winner, y_label = "Win percentage") {
+plot_separated_effect_2016 <- function(data,
+                                       variable,
+                                       x_label,
+                                  y_variable= winner,
+                                  y_label = "Win percentage") {
   p <- ggplot(data = data) +
     geom_smooth(data = data |> filter(year >= 2007 & year <= 2015),
-                aes(x = {{ variable }}, y = {{ y_variable }}), color = "black") +
+                aes(x = {{ variable }},
+                    y = {{ y_variable }}),
+                color = "black") +
     geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),
-                aes(x = {{ variable }}, y = {{ y_variable }}), color = "blue") +
+                aes(x = {{ variable }}, 
+                    y = {{ y_variable }}),
+                color = "blue") +
     labs(title = paste("Number of", x_label, "per game"),
          subtitle = str_wrap("The curve represents the probability to win"),
          x = x_label,
          y = y_label) +
-    scale_color_manual(values = c("Before 2016" = "black", "After 2016" = "blue")) +  # Set line colors
+    scale_color_manual(values = c("Before 2016" = "black",
+                                  "After 2016" = "blue")) +  # Set line colors
     theme(legend.position = "bottom") +
     theme_minimal()
   
