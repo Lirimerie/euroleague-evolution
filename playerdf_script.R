@@ -194,7 +194,6 @@ create_win_percentage_plot <- function(data, x_var, y_var, title) {
 }
 
 # Load gridExtra library and arrange plots for printing
-install.packages("gridExtra")
 library(gridExtra)
 
 

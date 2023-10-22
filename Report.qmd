@@ -1,0 +1,260 @@
+---
+title: "A cool title"
+author: "Name I, First Name I and Name II, First Name II"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+# Introduction hello
+
+```{r chunk1, include=FALSE}
+library(tidyverse)
+
+euroleague<-read.csv("data/euroleague.csv")
+
+unique_playtypes <- unique(euroleague$PLAYINFO)
+unique_playtypes
+
+
+euroleague <- euroleague |>
+  mutate(PLAYINFO = str_remove(PLAYINFO, "\\s*\\([^)]+\\)"))
+
+#This line reduces the details of the Play information to 33 different ones
+#by removing a space and what is inside the parenthesis
+
+
+#euroleague <- euroleague |>
+  #filter(!str_detect(PLAYINFO, "Fighting|Bench Foul|Coach Foul|Begin Period|
+                     #End Period"))|>
+  #select(-TYPE,-PLAYTYPE,-CODETEAM, -DORSAL,-MARKERTIME,-PLAYER_ID,
+         #-X,-NUMBEROFPLAY) 
+
+# all variables in select() are unnecessary variables. 
+# Out|In could be taken out but we need to let Free throw in in the data set
+#(Will work on it)
+# I don't know which story could be told with Fighting
+# Begin Period|End Period are not that necessary or so do I think as of now
+# Coach Foul and Bench Foul are not as relevant
+
+euroleague <- euroleague |>
+  mutate(points_made = case_when(
+    PLAYINFO %in% c("Layup Made", "Two Pointer","Dunk") ~ 2,
+    PLAYINFO == "Three Pointer" ~ 3,
+    PLAYINFO == "Free Throw In" ~ 1,
+    TRUE ~ 0
+  ))
+
+source("CreationDataFrame.R")
+stat_per_games <- CreationDataFrameTEST(euroleague)
+stat_per_games_last_4 <- CreationDataFrame_last4(euroleague)
+stat_per_games_first37<- CreationDataFrame_37(euroleague)
+
+stat_per_games <- uniformisation(stat_per_games)
+stat_per_games_first37 <- uniformisation(stat_per_games_first37)
+stat_per_games_last_4 <- uniformisation(stat_per_games_last_4)
+
+stat_per_games <- stat_per_games |>
+  rowwise() |>
+  mutate(
+    Tot_Point_A = 3 * sum(ThreeS_A, na.rm = TRUE) + 
+      2 * sum(TwoS_A, na.rm = TRUE) + 
+      sum(FTS_A, na.rm = TRUE),
+    Tot_Point_B = 3 * sum(ThreeS_B, na.rm = TRUE) + 
+      2 * sum(TwoS_B, na.rm = TRUE) + 
+      sum(FTS_B, na.rm = TRUE)
+  ) |>
+  ungroup()
+
+stat_per_games <- stat_per_games |>
+  mutate(TeamA = toupper(TeamA))|>
+  mutate(TeamB = toupper(TeamB))
+
+stat_per_games_last_4 <- stat_per_games_last_4 |>
+  mutate(TeamA = toupper(TeamA))|>
+  mutate(TeamB = toupper(TeamB))
+
+stat_per_games_first37 <- stat_per_games_first37 |>
+  mutate(TeamA = toupper(TeamA))|>
+  mutate(TeamB = toupper(TeamB))
+
+stat_per_games <- stat_per_games |>
+  mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB),
+         Total_Difference = abs(Tot_Point_A - Tot_Point_B))
+
+stat_per_games_first37 <- stat_per_games_first37|>
+  mutate(foul_relative_minutes = (tot_foul/37))
+
+stat_per_games_last_4 <- stat_per_games_last_4 |>
+  left_join(select(stat_per_games, gamenumber, year, Tot_Point_A,
+                   Tot_Point_B, winner,Total_Difference),
+            by = c("gamenumber", "year"))
+stat_per_games_first37 <- stat_per_games_first37 |>
+  left_join(select(stat_per_games, gamenumber, year, Tot_Point_A,
+                   Tot_Point_B, winner,Total_Difference),
+            by = c("gamenumber", "year"))
+
+# Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
+last_pts <- euroleague |>
+  filter(MINUTE <= 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) |>
+  group_by(year, gamenumber) |>
+  summarise(
+    pts_A = max(POINTS_A),
+    pts_B = max(POINTS_B)
+  )
+
+# Join le résultat avec stat_per_games_last_4
+create_team_points_plot <- function(Year) {
+  df <- team_stats_season %>% filter(year == Year)
+  df_sorted <- df %>% arrange(desc(average_points))
+  top_teams <- head(df_sorted, 5)
+  bottom_teams <- tail(df_sorted, 5)
+  combined_teams <- rbind(top_teams, bottom_teams)
+  
+  # Tri des combined_teams
+  combined_teams <- combined_teams %>% arrange(desc(average_points))
+  
+  plot <- ggplot(combined_teams, 
+                 aes(x = reorder(Team, -average_points),
+                     y = average_points, 
+                     fill = ifelse(rank(average_points) <= 5,
+                                   "Bottom 5", "Top 5"))) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = c("Top 5" = "green", "Bottom 5" = "red")) +
+    labs(title = paste("Top 5 and Bottom 5 Teams in",
+                       Year, "by Average Points"),
+         x = "Team",
+         y = "Average Points",
+         fill = "") +
+    theme(axis.text.x = element_text(angle = 40, hjust = 1))
+  
+  return(plot)
+}
+team_stats_plot_over_years <- function(team_stats_season,
+                                       variable,
+                                       title,
+                                       y_label,
+                                       plot_name) {
+  
+  best_in_class <- team_stats_season |>
+    group_by(year) |>
+    filter({{ variable }} == max({{ variable }}, na.rm = TRUE)) |>
+    ungroup()
+  
+  p1 <- ggplot(data = team_stats_season) +
+    geom_point(mapping = aes(x = year, y = {{ variable }}, color = Team)) +
+    geom_smooth(mapping = aes(x = year, y = {{ variable }})) +
+    labs(title = title,
+         x = "Season year",
+         y = y_label) +
+    geom_label_repel(aes(x = year, y = {{ variable }}, label = Team),
+                     data = best_in_class,
+                     box.padding = 0.6,
+                     size = 2.3) +
+    theme(legend.position = "none",
+          panel.background = element_rect(fill = "white"),
+          panel.grid = element_line(color = "gray80", size = 0.2)
+          )
+  #For some reasons, didn't work calling theme_minimal()
+                              
+  # Assign the plots to custom names
+  assign(plot_name, p1, envir = .GlobalEnv)
+  
+  # Return the custom names for reference
+  return(p1 = plot_name)
+}
+
+# Example usage:
+#plots <- team_stats_plot_over_years(team_stats_season,average_threeS,
+#                                    "Average of three pointer made per game",
+#                                    "Average Three pointer Made",
+#                                    "plot_threeS_over_years"
+#                                    )
+
+# Access the custom names for pp and p1 outside the function
+#print(plot_threeS_over_years)
+
+#The following function allows to plot any graph comparing 2007-2016 to 2016-2020
+plot_separated_effect_2016 <- function(data,
+                                       variable,
+                                       x_label,
+                                  y_variable= winner,
+                                  y_label = "Win percentage") {
+  p <- ggplot(data = data) +
+    geom_smooth(data = data |> filter(year >= 2007 & year <= 2015),
+                aes(x = {{ variable }},
+                    y = {{ y_variable }}),
+                color = "black") +
+    geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),
+                aes(x = {{ variable }}, 
+                    y = {{ y_variable }}),
+                color = "blue") +
+    labs(title = paste("Number of", x_label, "per game"),
+         subtitle = str_wrap("The curve represents the probability to win"),
+         x = x_label,
+         y = y_label) +
+    scale_color_manual(values = c("Before 2016" = "black",
+                                  "After 2016" = "blue")) +  # Set line colors
+    theme(legend.position = "bottom") +
+    theme_minimal()
+  
+  return(p)
+}
+
+# Example usage:
+#p4 <- plot_separated_effect_2016(team_stats_df, three_attempts, "Three-point attempts")
+#p4
+
+# The following function just does a regression in general
+plot_effect_game <- function(data, variable, x_label,
+                        y_variable= winner, y_label = "Win percentage") {
+  label_text = "General trend over the years"
+  p <- ggplot(data = data) +
+    geom_smooth(data = data,
+                aes(x = {{ variable }}, y = {{ y_variable }}),
+                color = "black",label = label_text) +
+    labs(title = paste("Number of", x_label, "per game"),
+         subtitle = str_wrap("The curve represents the probability to win"),
+         x = x_label,
+         y = y_label) +
+    theme(legend.position = "bottom") +
+ # coord_cartesian( ylim = c(0, 1)) +
+    theme_minimal()
+  
+  return(p)
+  
+  
+  source("Ranking.R") 
+
+team_stats_df <- process_team_stats_data(stat_per_games)
+team_stats_season <- calculate_team_season_stats(team_stats_df)
+#creates two dataframes with statistics per team and per game/per season
+
+#the following take the last four minutes out and create new dataframes
+team_stats_df_37 <- process_team_stats_data(stat_per_games_first37)
+team_stats_season_37 <- calculate_team_season_stats(team_stats_df_37)
+team_stats_df_4 <- process_team_stats_data(stat_per_games_last_4)
+team_stats_df_4_not_desperate <- team_stats_df_4|>
+  filter(Diff_Points_Min_35 <= 5 & Diff_Points_Min_35 > 0)
+team_stats_season_4 <- calculate_team_season_stats(team_stats_df_4)
+
+plots <- 
+  team_stats_plot_over_years(team_stats_season,
+                             average_three_attempts,
+                             "Average of three pointer attempted per game",
+                             "Average Three pointer attempted by the team",
+                             "plot_three_attempts_over_years"
+)
+print(plot_three_attempts_over_years)
+
+}
+
+
+
+```
+
+
+
+
+
+```{r, echo=FALSE,include=TRUE}
+print(plot_three_attempts_over_years)
+```
