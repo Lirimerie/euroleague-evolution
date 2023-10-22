@@ -9,7 +9,6 @@ library(ggplot2)
 euroleague <- euroleague |>
   mutate(PLAYINFO = str_remove(PLAYINFO, "\\s*\\([^)]+\\)"))
 
-
 # Define a function to process player statistics
 PlayerFunctiondf <- function(euroleague) {
   playerdf <- euroleague |>
@@ -110,10 +109,13 @@ stat_per_game_player <- PlayerFunctiondf(euroleague) |>
   )|>
   select(-TeamA, -TeamB) |>
   left_join(team_stats_season, by = c("year", "Team")) |>
-  mutate(avg_defreb = tot_DefReb / total_games)|>
-  mutate(avg_offreb = tot_OffReb / total_games)|>
-  mutate(avg_points = (tot_point2*2 + tot_point3*3) / total_games)|>
+  mutate(points_made = (tot_point2*2 + tot_point3*3 + tot_FT + tot_Layup*2 + tot_Dunk*2),
+         avg_defreb = tot_DefReb / total_games,
+         avg_offreb = tot_OffReb / total_games,
+         avg_points = points_made / total_games
+  ) |>
   filter(total_games > 10)
+
 
 
 # Function to find the top player in a given column
