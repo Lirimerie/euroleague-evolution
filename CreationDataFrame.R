@@ -208,7 +208,9 @@ CreationDataFrame_37 <- function(euroleague) {
   
   return(stat_per_games)
 }
-
+#We think that NA means that the value is of 0
+#We also needed to merge all different types of 2pts, as dunks and layups are
+#not always counted
 uniformisation <- function(data){
   data <- data|>
     mutate(TwoS_A = coalesce(TwoS_A,0) + coalesce(DUNK_A,0) + coalesce(LUS_A,0),

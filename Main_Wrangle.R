@@ -1,4 +1,4 @@
-
+#Import the libraires and the dataset
 library(tidyverse)
 
 euroleague<-read.csv("data/euroleague.csv")
@@ -13,20 +13,7 @@ euroleague <- euroleague |>
 #This line reduces the details of the Play information to 33 different ones
 #by removing a space and what is inside the parenthesis
 
-
-#euroleague <- euroleague |>
-  #filter(!str_detect(PLAYINFO, "Fighting|Bench Foul|Coach Foul|Begin Period|
-                     #End Period"))|>
-  #select(-TYPE,-PLAYTYPE,-CODETEAM, -DORSAL,-MARKERTIME,-PLAYER_ID,
-         #-X,-NUMBEROFPLAY) 
-
-# all variables in select() are unnecessary variables. 
-# Out|In could be taken out but we need to let Free throw in in the data set
-#(Will work on it)
-# I don't know which story could be told with Fighting
-# Begin Period|End Period are not that necessary or so do I think as of now
-# Coach Foul and Bench Foul are not as relevant
-
+#Adds a column containing the points made 
 euroleague <- euroleague |>
   mutate(points_made = case_when(
     PLAYINFO %in% c("Layup Made", "Two Pointer","Dunk") ~ 2,
@@ -35,7 +22,7 @@ euroleague <- euroleague |>
     TRUE ~ 0
   ))
 
-source("CreationDataFrame.R")
+source("CreationDataFrame.R") #See CreationDataFrame.R for more explanations
 stat_per_games <- CreationDataFrameTEST(euroleague)
 stat_per_games_last_4 <- CreationDataFrame_last4(euroleague)
 stat_per_games_first37<- CreationDataFrame_37(euroleague)
@@ -55,7 +42,8 @@ stat_per_games <- stat_per_games |>
       sum(FTS_B, na.rm = TRUE)
   ) |>
   ungroup()
-
+#Sometimes, the team's name was in Caps, sometimes not. We solved this by
+#putting every team's names in caps
 stat_per_games <- stat_per_games |>
   mutate(TeamA = toupper(TeamA))|>
   mutate(TeamB = toupper(TeamB))
@@ -68,6 +56,7 @@ stat_per_games_first37 <- stat_per_games_first37 |>
   mutate(TeamA = toupper(TeamA))|>
   mutate(TeamB = toupper(TeamB))
 
+#Creates a winner variable with the name of the team winning
 stat_per_games <- stat_per_games |>
   mutate(winner = ifelse(Tot_Point_A > Tot_Point_B, TeamA, TeamB),
          Total_Difference = abs(Tot_Point_A - Tot_Point_B))
@@ -106,24 +95,21 @@ stat_per_games_last_4 <- stat_per_games_last_4|>
 
 
 
-source("Ranking.R") 
+source("Ranking.R") #Creates usable dataframes with statistics per team, per game
+#and pert team, per season
 
 team_stats_df <- process_team_stats_data(stat_per_games)
 team_stats_season <- calculate_team_season_stats(team_stats_df)
 #creates two dataframes with statistics per team and per game/per season
 
-#the following take the last four minutes out and create new dataframes
+#the following separates the last five minutes out and create new dataframes
 team_stats_df_37 <- process_team_stats_data(stat_per_games_first37)
 team_stats_season_37 <- calculate_team_season_stats(team_stats_df_37)
 team_stats_df_4 <- process_team_stats_data(stat_per_games_last_4)
 team_stats_df_4_not_desperate <- team_stats_df_4|>
   filter(Diff_Points_Min_35 <= 5 & Diff_Points_Min_35 > 0)
 team_stats_season_4 <- calculate_team_season_stats(team_stats_df_4)
-#creates two dataframes with statistics per team and per game/per season
+#team_stats_df_4_not_desperate wants to show tied game and not every game
 
 
-source("playerdf_script.R")
-
-
-
-#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
+source("playerdf_script.R") # Creates the player's dataframes and statistics

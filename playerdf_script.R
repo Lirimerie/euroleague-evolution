@@ -5,10 +5,6 @@ library(dplyr)
 library(ggplot2)
 
 
-# Remove information in parentheses from the PLAYINFO column
-euroleague <- euroleague |>
-  mutate(PLAYINFO = str_remove(PLAYINFO, "\\s*\\([^)]+\\)"))
-
 # Define a function to process player statistics
 PlayerFunctiondf <- function(euroleague) {
   playerdf <- euroleague |>
@@ -116,7 +112,8 @@ stat_per_game_player <- PlayerFunctiondf(euroleague) |>
   ) |>
   filter(total_games > 10)
 
-
+#Here, no need to merge 2points, layups and dunks as we did not use them to plot
+#anything related to the number of 2pts
 
 # Function to find the top player in a given column
 find_top_player <- function(stat_per_game_player, column_name) {
