@@ -3,27 +3,36 @@ library(tidyverse)
 library(dplyr)
 
 
-
+# Define a function called process_playtype that takes a dataframe (df),
+#a per game statistics dataframe (stat_p_g),
+# a specified playtype, and two statistics labels (stat_a and stat_b) as input.
 
 process_playtype <- function(df, stat_p_g, playtype, stat_a, stat_b) {
-  result <- df %>%
-    filter(grepl(playtype, PLAYTYPE)) %>%
-    group_by(year, gamenumber, TEAM) %>%
+  
+  result <- df |>
+    #choose the rows where the playtype that we are interested in appears
+    filter(grepl(playtype, PLAYTYPE)) |>
+    #group by yeear gamenumber and team 
+    group_by(year, gamenumber, TEAM)|>
+    #count the number of rows where this playtype appears 
     summarize(jjj = n())
   
+  #name of the news columns 
   col_name_a <- paste(stat_a, "A", sep = "_")
   col_name_b <- paste(stat_b, "B", sep = "_")
   
-  stat_p_g <- stat_p_g %>%
-    left_join(result, by = c("gamenumber", "year", TeamA = "TEAM")) %>%
-    mutate(!!col_name_a := jjj) %>%
+  #add the column to to the dataframe and name it for team A and B
+  stat_p_g <- stat_p_g |>
+    left_join(result, by = c("gamenumber", "year", TeamA = "TEAM")) |>
+    mutate(!!col_name_a := jjj) |>
     select(-jjj)
   
-  stat_p_g <- stat_p_g %>%
-    left_join(result, by = c("gamenumber", "year", TeamB = "TEAM")) %>%
-    mutate(!!col_name_b := jjj) %>%
+  stat_p_g <- stat_p_g |>
+    left_join(result, by = c("gamenumber", "year", TeamB = "TEAM")) |>
+    mutate(!!col_name_b := jjj) |>
     select(-jjj)
   
+  #Remove the "result" dataframe from memory to free up memory.
   rm(result)
   
   return(stat_p_g)
@@ -32,10 +41,12 @@ process_playtype <- function(df, stat_p_g, playtype, stat_a, stat_b) {
 
 
 
+# creates the dataframe from euroleague and count all the statistics 
+# for all the game not for a specific team 
 
 CreationDataFrameTEST <- function(euroleague) {
-  stat_per_games <- euroleague %>%
-    group_by(gamenumber, year) %>%
+  stat_per_games <- euroleague |>
+    group_by(gamenumber, year)|>
     summarise(
       tot_point3 = sum(str_count(PLAYTYPE, "3FGM")),
       tot_point3_missed = sum(str_count(PLAYTYPE, "3FGA")),
@@ -53,6 +64,8 @@ CreationDataFrameTEST <- function(euroleague) {
       TeamA = first(TeamA),  
       TeamB = first(TeamB)
     )
+  
+  #use the function that we create before to compute the statistics for each team 
   
   stat_per_games <- process_playtype(euroleague, stat_per_games,
                                      "3FGM", "ThreeS", "ThreeS")
@@ -86,15 +99,14 @@ CreationDataFrameTEST <- function(euroleague) {
 }
   
 
+#we create the same dataframe but taking into account only the last 4 minutes 
 
 CreationDataFrame_last4 <- function(euroleague) {
-  # Filtrer les données où les valeurs de la colonne "minute" sont supérieures à 35
-  euroleague <- euroleague %>%
+  euroleague <- euroleague |>
     filter(MINUTE > 36)
   
-  # Ensuite, vous pouvez continuer avec le reste du traitement
-  stat_per_games <- euroleague %>%
-    group_by(gamenumber, year) %>%
+  stat_per_games <- euroleague |>
+    group_by(gamenumber, year) |>
     summarise(
       tot_point3 = sum(str_count(PLAYTYPE, "3FGM")),
       tot_point3_missed = sum(str_count(PLAYTYPE, "3FGA")),
@@ -148,16 +160,16 @@ CreationDataFrame_last4 <- function(euroleague) {
 
 
 
-
+#same thing but here for the first 37 minutes of the game 
 
 CreationDataFrame_37 <- function(euroleague) {
-  # Filtrer les données où les valeurs de la colonne "minute" sont supérieures à 35
-  euroleague <- euroleague %>%
+
+  euroleague <- euroleague |>
     filter(MINUTE <= 36)
   
-  # Ensuite, vous pouvez continuer avec le reste du traitement
-  stat_per_games <- euroleague %>%
-    group_by(gamenumber, year) %>%
+
+  stat_per_games <- euroleague |>
+    group_by(gamenumber, year) |>
     summarise(
       tot_point3 = sum(str_count(PLAYTYPE, "3FGM")),
       tot_point3_missed = sum(str_count(PLAYTYPE, "3FGA")),

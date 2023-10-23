@@ -3,8 +3,10 @@ process_team_stats_data <- function(data) {
   processed_data <- data |>
     pivot_longer(cols = c(TeamA, TeamB), names_to = "Team_Type",
                  values_to = "Team") |>
+    # Create a "winner" variable (1 if the team is the winner, 0 otherwise)
     mutate(winner = ifelse(winner == Team, 1, 0)) |>
     mutate(
+      # Create new columns by combining statistics from TeamA and TeamB based on "Team_Type."
       Tot_Points = case_when(
         Team_Type == "TeamA" ~ Tot_Point_A,
         Team_Type == "TeamB" ~ Tot_Point_B,
@@ -75,6 +77,8 @@ process_team_stats_data <- function(data) {
            -Foul_commited_A, -Foul_commited_B)
   if ("pts_A" %in% colnames(data)) {
     processed_data <- processed_data |>
+      # Create additional columns related to points and point differentials 
+      #if "pts_A" is in the original data.
       mutate(
         Points_35_first_min = case_when(
           Team_Type == "TeamA" ~ pts_A,
@@ -90,6 +94,8 @@ process_team_stats_data <- function(data) {
       )  |>
       select(-pts_A, -pts_B)
   } 
+  
+  #rename the teams because there is differents names for the same team 
   processed_data <- processed_data |>
     select(-Team_Type,-Tot_Point_A, -Tot_Point_B)|>  
     mutate(Team = recode(Team,

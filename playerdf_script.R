@@ -4,9 +4,6 @@ library(tidyverse)
 library(dplyr)
 library(ggplot2)
 
-# Remove information in parentheses from the PLAYINFO column
-euroleague <- euroleague |>
-  mutate(PLAYINFO = str_remove(PLAYINFO, "\\s*\\([^)]+\\)"))
 
 # Define a function to process player statistics
 PlayerFunctiondf <- function(euroleague) {
@@ -193,9 +190,6 @@ create_win_percentage_plot <- function(data, x_var, y_var, title) {
     labs(title = title)
   return(p)
 }
-
-# Load gridExtra library and arrange plots for printing
-#install.packages("gridExtra")
 
 library(gridExtra)
 

@@ -3,7 +3,11 @@ library (patchwork)
 library(ggrepel)
 library(gridExtra)
 source("Function.R")
+
 #Statistics per team about three pointers
+
+#this script is where we create all the plot that we wanted 
+
 plots <- 
   team_stats_plot_over_years(team_stats_season,
                              average_threeS,
@@ -104,7 +108,7 @@ top_winners<-ggplot(top_teams, aes(x = as.factor(year),
                                    y = win_percentage, fill = Team)) +
   geom_bar(stat = "identity", position = "dodge") +
   geom_text(aes(label = Team), position = position_dodge(width = 0.9),
-            angle = 90, hjust = 1, vjust = 0.5) + # Rotation et ajustements
+            angle = 90, hjust = 1, vjust = 0.5) + 
   labs(title = "Les 3 équipes avec le meilleur win percentage chaque année",
        x = "Année",
        y = "Win Percentage") +
