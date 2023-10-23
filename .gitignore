@@ -31,6 +31,7 @@ vignettes/*.pdf
 data/
 test_quarto.html
 test_quarto_files
+test_quarto.tex
 
 # knitr and R markdown default cache directories
 *_cache/

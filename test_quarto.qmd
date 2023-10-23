@@ -9,7 +9,7 @@ output: html_document
 
 # Introduction
 
-We live in a world where the use of statistics and data analysis is of paramount importance to gain a comprehensive understanding of various subjects, allowing individuals to grasp the broader picture of what is happening around them. In the realm of sports, this emphasis on statistics is no exception. In contemporary sports, statistics play a pivotal role in ranking players and determining their relative skills and performance. Furthermore, teams increasingly rely on statistics to gain insights into the strategies employed by opposing teams, enabling them to develop effective counterstrategies for a higher chance of victory.
+We live in a world where the use of statistics and data analysis is of paramount importance to gain a comprehensive understanding of various subjects, allowing individuals to grasp the broader picture of what is happening around them. In the realm of sports, this emphasis on statistics is no exception, and is even the subject of movies like Moneyball. In contemporary sports, statistics play a pivotal role in ranking players and determining their relative skills and performance. Furthermore, teams increasingly rely on statistics to gain insights into the strategies employed by opposing teams, enabling them to develop effective counterstrategies for a higher chance of victory.
 
 Beyond the competitive aspect, statistics and data analysis are crucial in sports to track how the game evolves over time. This data-driven approach aids in adapting to changing trends and styles in the sport, as well as in refining player training and development to align with the modern game.
 
@@ -48,7 +48,6 @@ We selected our dataset from Kaggle, a prominent data science competition platfo
 
 [The dataset](https://www.kaggle.com/datasets/efehandanisman/euroleague-play-by-play-data-20072020) in question provides comprehensive play-by-play information for Euroleague basketball games, spanning from 2007 through 2020. Each entry within this dataset encapsulates a specific game event, encompassing details such as the game minute, involved player and his respective team, action type, and whether it entails a two or three-point shot attempt, along with its successful outcome or miss. This invaluable dataset serves as a foundational resource for analyzing and understanding the intricacies of Euroleague basketball across the specified time period. This extensive dataset, containing over 1.6 million entries, required thorough wrangling to extract and uncover interesting stories.
 
-
 As an example, here is the first entry of this dataset.
 
 ```{r}
@@ -57,21 +56,28 @@ head(euroleague, 1)
 
 ```
 
-Given the wealth of data at our disposal, the process of discerning relevance and assembling pertinent information was essential. We meticulously organized the voluminous play-by-play entries, systematically aggregating them into coherent units of games. Subsequently, these games were further categorized into distinct years or seasons, thereby facilitating the extraction of comprehensive statistical insights related to teams and players. This strategic approach not only streamlines the analytical process but also enables a more granular exploration of performance metrics across the evolving landscape of Euroleague basketball.
+Given the wealth of data at our disposal, the process of discerning relevance and assembling pertinent information was essential. We meticulously organized the voluminous play-by-play entries, systematically aggregating them into coherent units of games. Subsequently, these games were further categorized into distinct years or seasons, thereby facilitating the extraction of comprehensive statistical insights related to teams and players. This strategic approach not only streamlines the analytical process but also enables a more granular exploration of performance metrics across the evolving landscape of Euroleague basketball.Many variables were created for our use, we for example wanted to know the winner of the games, know what happens in the first 36 minutes compared to the last four minutes, and we wanted to use the accuracy percentage for some of our data analysis.
 
+After transforming the dataset into stat_per_games, we stumbled upon an outlier.
 
-Parler de media white et media black team.
-2007 + 2015-2020 pas de dunk lay-up.
-Enlever les NA Renommer les équipes, noms presque similaires 
-Créer des nouvelles colonnes (total point, winner, etc.)
+```{r}
+#| echo: false
+tail(stat_per_games, 1)
+
+```
+
+In 2018, There was one game between Media Black Team and Media White Team, which ended with a score of 41-49. Those two teams never  appear in any other games and the score was sufficiently low to have a huge impact on our analysis. We decided to erase this game out of stat_per_games and to consider it as an outlier. 
+Many teams had to be renamed. We can take the example of Milan, which had for instance the name of EA7 EMPORIO ARMANI MILAN and the name of EA7 EMPORIO ARMANI MILANO in the same year.
+Sometimes, the lay-ups and the dunks were not counted as two points, but were counted separately as lay-ups or dunks. Sometimes, the data did not make any difference between two points, a dunk or a lay-up, which makes more sense, as a lay-up or a dunk counts as two-points. We decided to merge the three variables into another variable counting the number of two-points made in total.
+Some variables were created only with the goal of verifying that our code was correct. We decided to let those variables in our dataframes, because they might be useful to someone in the future.
 
 # Exploratory data analysis
 
 blabla
-
+Def rebounds are weird
 # Analysis
 
-blabla
+je vous avais dit que j'avais une ps5?
 
 # Conclusion
 
