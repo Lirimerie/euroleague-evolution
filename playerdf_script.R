@@ -5,6 +5,13 @@ library(dplyr)
 library(ggplot2)
 
 
+<<<<<<< HEAD
+=======
+# Remove information in parentheses from the PLAYINFO column
+euroleague <- euroleague |>
+  mutate(PLAYINFO = str_remove(PLAYINFO, "\\s*\\([^)]+\\)"))
+
+>>>>>>> 9e28d2a (start script)
 # Define a function to process player statistics
 PlayerFunctiondf <- function(euroleague) {
   playerdf <- euroleague |>
@@ -115,6 +122,7 @@ stat_per_game_player <- PlayerFunctiondf(euroleague) |>
 #Here, no need to merge 2points, layups and dunks as we did not use them to plot
 #anything related to the number of 2pts
 
+
 # Function to find the top player in a given column
 find_top_player <- function(stat_per_game_player, column_name) {
   result <- stat_per_game_player |>
@@ -191,6 +199,10 @@ create_win_percentage_plot <- function(data, x_var, y_var, title) {
 }
 
 # Load gridExtra library and arrange plots for printing
+<<<<<<< HEAD
+=======
+#install.packages("gridExtra")
+>>>>>>> 9e28d2a (start script)
 library(gridExtra)
 
 
@@ -247,7 +259,6 @@ player_stats_plot_over_years <- function(stat_per_game_player, variable, title, 
     theme(legend.position = "none")
   
   merged <- grid.arrange(p1, p2, ncol = 1)
-  print(merged)
 }
 
 AvgDefReb_plot <- player_stats_plot_over_years(stat_per_game_player, avg_defreb,

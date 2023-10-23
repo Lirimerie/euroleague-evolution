@@ -30,6 +30,12 @@ The `echo: false` option disables the printing of code (only output is displayed
 #| echo: false
 library(ggplot2)
 source("Main_Wrangle.R")
+
+#| hide: true
+#| echo: false
+#| message: false
+source("Main_Wrangle.R")
+dev.new()
 ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
   geom_bar(stat = "identity") +
   labs(title = "Mean of the 75 players with the lowest 3-point percentage",
@@ -40,6 +46,8 @@ ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotation des étiquettes de l'axe x
   scale_x_continuous(breaks = seq(min(df_mean_threebad$year), 
                                   max(df_mean_threebad$year), by = 1))  # Définir les étiquettes de l'axe x
+
+dev.off()
 ```
 
 # Data
