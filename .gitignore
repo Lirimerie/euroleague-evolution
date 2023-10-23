@@ -29,6 +29,8 @@ vignettes/*.pdf
 .httr-oauth
 
 data/
+test_quarto.html
+test_quarto_files
 
 # knitr and R markdown default cache directories
 *_cache/
