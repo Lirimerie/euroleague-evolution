@@ -1,12 +1,12 @@
 create_team_points_plot <- function(Year) {
-  df <- team_stats_season %>% filter(year == Year)
-  df_sorted <- df %>% arrange(desc(average_points))
+  df <- team_stats_season |> filter(year == Year)
+  df_sorted <- df |> arrange(desc(average_points))
   top_teams <- head(df_sorted, 5)
   bottom_teams <- tail(df_sorted, 5)
   combined_teams <- rbind(top_teams, bottom_teams)
   
   # Tri des combined_teams
-  combined_teams <- combined_teams %>% arrange(desc(average_points))
+  combined_teams <- combined_teams |> arrange(desc(average_points))
   
   plot <- ggplot(combined_teams, 
                  aes(x = reorder(Team, -average_points),

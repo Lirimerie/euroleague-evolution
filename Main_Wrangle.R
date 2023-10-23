@@ -31,6 +31,7 @@ stat_per_games <- uniformisation(stat_per_games)
 stat_per_games_first37 <- uniformisation(stat_per_games_first37)
 stat_per_games_last_4 <- uniformisation(stat_per_games_last_4)
 
+#add column about the points 
 stat_per_games <- stat_per_games |>
   rowwise() |>
   mutate(
@@ -42,6 +43,7 @@ stat_per_games <- stat_per_games |>
       sum(FTS_B, na.rm = TRUE)
   ) |>
   ungroup()
+
 #Sometimes, the team's name was in Caps, sometimes not. We solved this by
 #putting every team's names in caps
 stat_per_games <- stat_per_games |>
@@ -73,18 +75,21 @@ stat_per_games_first37 <- stat_per_games_first37 |>
                    Tot_Point_B, winner,Total_Difference),
             by = c("gamenumber", "year"))
 
-# Utilisez la fonction pour extraire les dernières valeurs non-NA de POINTS_A et POINTS_B
+#take the last points in at the 37minutes to add it on the dataframe of 
+#the last 4 minutes 
 last_pts <- euroleague |>
-  filter(MINUTE <= 35 & !is.na(POINTS_A) & !is.na(POINTS_B)) |>
+  filter(MINUTE <= 37 & !is.na(POINTS_A) & !is.na(POINTS_B)) |>
   group_by(year, gamenumber) |>
   summarise(
     pts_A = max(POINTS_A),
     pts_B = max(POINTS_B)
   )
 
-# Join le résultat avec stat_per_games_last_4
+#we add it here
 stat_per_games_last_4 <- stat_per_games_last_4 |>
   left_join(last_pts, by = c("year", "gamenumber"))
+
+#count the number of foul per minute in the last 4 minutes and add this statistic 
 stat_per_games_last_4 <- stat_per_games_last_4|>
   mutate(absolute_diff_points = abs(pts_A - pts_B),
          foul_relative_minutes = (tot_foul/4),
