@@ -167,7 +167,8 @@ process_team_stats_data <- function(data) {
     mutate(
       three_attempts = coalesce(ThreeS, 0) + coalesce(ThreeF, 0),
       two_attempts = coalesce(TwoS, 0) + coalesce(TwoF, 0),
-      FT_attempts = coalesce(FTS, 0) + coalesce(FTF, 0)
+      FT_attempts = coalesce(FTS, 0) + coalesce(FTF, 0),
+      When = ifelse(year <=2015,"From 2007 to 2016","From 2016 to 2020") #useful for plots
     ) |>
     mutate(
       three_accuracy = ThreeS / three_attempts,

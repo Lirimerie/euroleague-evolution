@@ -20,7 +20,8 @@ create_team_points_plot <- function(Year) {
          x = "Team",
          y = "Average Points",
          fill = "") +
-    theme(axis.text.x = element_text(angle = 40, hjust = 1))
+    theme(axis.text.x = element_text(angle = 40, hjust = 1))+
+    theme_minimal()
   
   return(plot)
 }
@@ -37,9 +38,10 @@ team_stats_plot_over_years <- function(team_stats_season,
   
   p1 <- ggplot(data = team_stats_season) +
     geom_point(mapping = aes(x = year, y = {{ variable }}, color = Team)) +
-    geom_smooth(mapping = aes(x = year, y = {{ variable }})) +
+    geom_smooth(mapping = aes(x = year, y = {{ variable }}),color = "darkgray",
+                se = FALSE,) +
     labs(title = title,
-         x = "Season year",
+         x = "Year at which the season begins",
          y = y_label) +
     geom_label_repel(aes(x = year, y = {{ variable }}, label = Team),
                      data = best_in_class,
@@ -71,26 +73,23 @@ team_stats_plot_over_years <- function(team_stats_season,
 #The following function allows to plot any graph comparing 2007-2016 to 2016-2020
 plot_separated_effect_2016 <- function(data,
                                        variable,
-                                       x_label,
-                                  y_variable= winner,
-                                  y_label = "Win percentage") {
+                                       x_label,titre = "",sous_titre = "",
+                                       y_variable= winner,
+                                       y_label = "Win percentage"
+                                        ) {
   p <- ggplot(data = data) +
-    geom_smooth(data = data |> filter(year >= 2007 & year <= 2015),
+    geom_smooth(data = data,
                 aes(x = {{ variable }},
-                    y = {{ y_variable }}),
-                color = "black") +
-    geom_smooth(data = data |> filter(year >= 2016 & year <= 2020),
-                aes(x = {{ variable }}, 
-                    y = {{ y_variable }}),
-                color = "blue") +
-    labs(title = paste("Number of", x_label, "per game"),
-         subtitle = str_wrap("The curve represents the probability to win"),
+                    y = {{ y_variable }},
+                    color = When,
+                    ),
+                     alpha = 0.15 ) +
+    labs(title = titre,
+         subtitle = sous_titre,
          x = x_label,
          y = y_label) +
-    scale_color_manual(values = c("Before 2016" = "black",
-                                  "After 2016" = "blue")) +  # Set line colors
-    theme(legend.position = "bottom") +
-    theme_minimal()
+    theme_minimal()+
+    theme(legend.position = "bottom") 
   
   return(p)
 }
@@ -101,14 +100,15 @@ plot_separated_effect_2016 <- function(data,
 
 # The following function just does a regression in general
 plot_effect_game <- function(data, variable, x_label,
-                        y_variable= winner, y_label = "Win percentage") {
+                             titre = "", sous_titre = "",
+                             y_variable = winner, y_label = "Win percentage") {
   label_text = "General trend over the years"
   p <- ggplot(data = data) +
     geom_smooth(data = data,
                 aes(x = {{ variable }}, y = {{ y_variable }}),
-                color = "black",label = label_text) +
-    labs(title = paste("Number of", x_label, "per game"),
-         subtitle = str_wrap("The curve represents the probability to win"),
+                color = "black", alpha = 0.8) +
+    labs(title = titre,
+         subtitle = sous_titre,
          x = x_label,
          y = y_label) +
     theme(legend.position = "bottom") +
