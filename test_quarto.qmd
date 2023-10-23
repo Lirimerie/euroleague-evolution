@@ -7,7 +7,7 @@ editor: visual
 output: html_document
 ---
 
-Introduction
+# Introduction
 
 We live in a world where the use of statistics and data analysis is of paramount importance to gain a comprehensive understanding of various subjects, allowing individuals to grasp the broader picture of what is happening around them. In the realm of sports, this emphasis on statistics is no exception. In contemporary sports, statistics play a pivotal role in ranking players and determining their relative skills and performance. Furthermore, teams increasingly rely on statistics to gain insights into the strategies employed by opposing teams, enabling them to develop effective counterstrategies for a higher chance of victory.
 
@@ -15,32 +15,34 @@ Beyond the competitive aspect, statistics and data analysis are crucial in sport
 
 Given our collective passion for sports, our group sought to identify a subject that would resonate with each member. We stumbled upon a remarkable database containing detailed information about basketball games in the EuroLeague, which piqued our interest (further details provided in the Data section of the report).
 
-Recognizing the global significance of the NBA (National Basketball Association) in the world of basketball, as well as its substantial influence on other basketball organizations, we decided to focus our project on analyzing how the playing style has evolved over the years, with a particular emphasis on three-point shooting. We aimed to explore how changes in playing style impact game outcomes and sought to investigate various other statistical trends. Moreover, we intended to shed light on how the game's dynamics shift as it progresses, with strategies adapting based on the game's context—whether it's a closely contested match or not. This analysis also delves into foul statistics in different game scenarios. Lastly, we aimed to provide a comprehensive overview of individual player statistics and their impact on their respective teams.
+Recognizing the global significance of the NBA (National Basketball Association) in the world of basketball, as well as its substantial influence on other basketball organizations, we decided to focus our project on analyzing how the playing style has evolved over the years, with a particular emphasis on three-point shooting. We aimed to explore how changes in playing style impact game outcomes and sought to investigate various other statistical trends. Moreover, we intended to shed light on how the game's dynamics shift as it progresses, with strategies adapting based on the game's context---whether it's a closely contested match or not. This analysis also delves into foul statistics in different game scenarios. Lastly, we aimed to provide a comprehensive overview of individual player statistics and their impact on their respective teams.
 
-{r}
+```{r}
 #| echo: false
-#| include: false
+#| include: false 
 source("Main_Wrangle.R")
 
+```
 
-{r}
-#| echo: false
-#| hide: true
+```{r}
+#| echo: false 
+#| hide: true 
 #| message: false
 
 ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Mean of the 75 players with the lowest 3-point percentage",
-       x = "Year",
-       y = "Percentage of 3-point success") +
-  scale_y_continuous(limits = c(0, 0.6)) +
-  theme_minimal() +  # Style minimal
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotation des étiquettes de l'axe x
+  geom_bar(stat = "identity") + 
+  labs(title = "Mean of the 75 players with the lowest 3-point percentage", 
+       x = "Year", 
+       y = "Percentage of 3-point success") + 
+  scale_y_continuous(limits = c(0, 0.6)) + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_x_continuous(breaks = seq(min(df_mean_threebad$year), 
-                                  max(df_mean_threebad$year), by = 1))  # Définir les étiquettes de l'axe x
+                                    max(df_mean_threebad$year), by = 1)) 
 
+```
 
-Data
+# Data
 
 We selected our dataset from Kaggle, a prominent data science competition platform renowned for hosting a wide array of datasets.
 
@@ -48,115 +50,108 @@ The dataset in question provides comprehensive play-by-play information for Euro
 
 As an example, here is the first entry of this dataset.
 
-{r}
-#| echo: false
+```{r}
+#| echo: false 
 head(euroleague, 1)
-
+```
 
 Given the wealth of data at our disposal, the process of discerning relevance and assembling pertinent information was essential. We meticulously organized the voluminous play-by-play entries, systematically aggregating them into coherent units of games. Subsequently, these games were further categorized into distinct years or seasons, thereby facilitating the extraction of comprehensive statistical insights related to teams and players. This strategic approach not only streamlines the analytical process but also enables a more granular exploration of performance metrics across the evolving landscape of Euroleague basketball.
 
 Parler de media white et media black team. 2007 + 2015-2020 pas de dunk lay-up. Enlever les NA Renommer les équipes, noms presque similaires Créer des nouvelles colonnes (total point, winner, etc.)
 
-Exploratory data analysis
+# Exploratory data analysis
 
 blabla
 
-Analysis
+# Analysis
 
 Exploring the influence of players with great statistics on a game's final outcome adds another layer of intrigue. In our analysis, we delve into the average points scored and the average defensive and offensive rebounds secured by players. The following visualizations depict the distribution of these averages over different seasons, shedding light on their impact on game dynamics.
 
-{r}
+```{r}
 #| echo: false
 #| message: false
 
 best_in_class_player <- stat_per_game_player |>
-    group_by(year) |>
-    filter(avg_defreb == max(avg_defreb, na.rm = TRUE)) |>
-    ungroup()
+  group_by(year)|>
+  filter(avg_defreb == max(avg_defreb, na.rm = TRUE))|>
+  ungroup()
 
-ggplot(data = stat_per_game_player) +
-  geom_point(mapping = aes(x = year, y = avg_defreb, color = PLAYER)) +
-  geom_smooth(mapping = aes(x = year, y = avg_defreb)) +
-  labs(title = "Average Defensive Rebound by Player",
-       subtitle = str_wrap("The points represent different players"),
-       x = "Season year",
-       y = "Number of Rebounds") +
+ggplot(data = stat_per_game_player) + 
+  geom_point(mapping = aes(x = year, y = avg_defreb, color = PLAYER)) + 
+  geom_smooth(mapping = aes(x = year, y = avg_defreb)) + 
+  labs(title = "Average Defensive Rebound by Player", 
+       subtitle = str_wrap("The points represent different players"), 
+       x = "Season year", 
+       y = "Number of Rebounds") + 
   theme(legend.position = "none")
 
-
-ggplot(best_in_class_player, aes(x = year, y = win_percentage)) +
-  geom_line() +
-  geom_point(mapping = aes(x= year, y = win_percentage)) +
-    labs(title = "Win percentage of the best statistic player's team",
-         x = "Season year",
-         y = "Win percentage") +
-    ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team),
-                              data = best_in_class_player,
-                              box.padding = 0.6,
-                              size = 1.5) +
-    theme(legend.position = "none") +
+ggplot(best_in_class_player, aes(x = year, y = win_percentage)) + 
+  geom_line() + 
+  geom_point(mapping = aes(x= year, y = win_percentage)) + 
+  labs(title = "Win percentage of the best statistic player's team", 
+       x = "Season year", 
+       y = "Win percentage") + 
+  ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team), 
+                            data = best_in_class_player, 
+                            box.padding = 0.6, size = 1.5) + 
+  theme(legend.position = "none") + 
   scale_y_continuous(limits = c(0,1))
 
-best_in_class_player <- stat_per_game_player |>
-    group_by(year) |>
-    filter(avg_offreb == max(avg_offreb, na.rm = TRUE)) |>
-    ungroup()
+best_in_class_player <- stat_per_game_player|>
+  group_by(year)|> 
+  filter(avg_offreb == max(avg_offreb, na.rm = TRUE))|> 
+  ungroup()
 
-ggplot(data = stat_per_game_player) +
-  geom_point(mapping = aes(x = year, y = avg_offreb, color = PLAYER)) +
-  geom_smooth(mapping = aes(x = year, y = avg_offreb)) +
-  labs(title = "Average Offensive Rebound by Player",
-       subtitle = str_wrap("The points represent different players"),
-       x = "Season year",
-       y = "Number of Rebounds") +
+ggplot(data = stat_per_game_player) + 
+  geom_point(mapping = aes(x = year, y = avg_offreb, color = PLAYER)) + 
+  geom_smooth(mapping = aes(x = year, y = avg_offreb)) + 
+  labs(title = "Average Offensive Rebound by Player", 
+       subtitle = str_wrap("The points represent different players"), 
+       x = "Season year", 
+       y = "Number of Rebounds") + 
   theme(legend.position = "none")
-  
 
-ggplot(best_in_class_player, aes(x = year, y = win_percentage)) +
-  geom_line() +
-  geom_point(mapping = aes(x= year, y = win_percentage)) +
-    labs(title = "Win percentage of the best statistic player's team",
-         x = "Season year",
-         y = "Win percentage") +
-    ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team),
-                              data = best_in_class_player,
-                              box.padding = 0.6,
-                              size = 1.5) +
-    theme(legend.position = "none") +
+ggplot(best_in_class_player, aes(x = year, y = win_percentage)) + 
+  geom_line() + 
+  geom_point(mapping = aes(x= year, y = win_percentage)) + 
+  labs(title = "Win percentage of the best statistic player's team", 
+       x = "Season year", 
+       y = "Win percentage") + 
+  ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team), 
+                            data = best_in_class_player, 
+                            box.padding = 0.6, size = 1.5) + 
+  theme(legend.position = "none") + 
   scale_y_continuous(limits = c(0,1))
 
+best_in_class_player <- stat_per_game_player |> 
+  group_by(year) |> 
+  filter(avg_points == max(avg_points, na.rm = TRUE)) |> 
+  ungroup()
 
-best_in_class_player <- stat_per_game_player |>
-    group_by(year) |>
-    filter(avg_points == max(avg_points, na.rm = TRUE)) |>
-    ungroup()
-
-ggplot(data = stat_per_game_player) +
-  geom_point(mapping = aes(x = year, y = avg_points, color = PLAYER)) +
-  geom_smooth(mapping = aes(x = year, y = avg_points)) +
-  labs(title = "Average Defensive Rebound by Player",
-       subtitle = str_wrap("The points represent different players"),
-       x = "Season year",
-       y = "Number of Points") +
+ggplot(data = stat_per_game_player) + 
+  geom_point(mapping = aes(x = year, y = avg_points, color = PLAYER)) + 
+  geom_smooth(mapping = aes(x = year, y = avg_points)) + 
+  labs(title = "Average Defensive Rebound by Player", 
+       subtitle = str_wrap("The points represent different players"), 
+       x = "Season year", 
+       y = "Number of Points") + 
   theme(legend.position = "none")
-  
 
-ggplot(best_in_class_player, aes(x = year, y = win_percentage)) +
-  geom_line() +
-  geom_point(mapping = aes(x= year, y = win_percentage)) +
-    labs(title = "Win percentage of the best statistic player's team",
-         x = "Season year",
-         y = "Win percentage") +
-    ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team),
-                              data = best_in_class_player,
-                              box.padding = 0.6,
-                              size = 1.5) +
-    theme(legend.position = "none") +
+ggplot(best_in_class_player, aes(x = year, y = win_percentage)) + 
+  geom_line() + 
+  geom_point(mapping = aes(x= year, y = win_percentage)) + 
+  labs(title = "Win percentage of the best statistic player's team", 
+       x = "Season year", 
+       y = "Win percentage") + 
+  ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team), 
+                            data = best_in_class_player, 
+                            box.padding = 0.6, size = 1.5) + 
+  theme(legend.position = "none") + 
   scale_y_continuous(limits = c(0,1))
-
+```
 
 We can see that
 
-Conclusion
+# Conclusion
 
 blabla
