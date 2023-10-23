@@ -1,41 +1,34 @@
 ---
-title: "project_report"
-format: html
+title: "Exploration of Euroleague basketball 2007-2020"
+author: "Deli Alan, Rashiti Lirim and Reis Matos Dylan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format: pdf
 editor: visual
 output: html_document
 ---
 
-## Quarto
+# Introduction
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+We live in a world where the use of statistics and data analysis is of paramount importance to gain a comprehensive understanding of various subjects, allowing individuals to grasp the broader picture of what is happening around them. In the realm of sports, this emphasis on statistics is no exception. In contemporary sports, statistics play a pivotal role in ranking players and determining their relative skills and performance. Furthermore, teams increasingly rely on statistics to gain insights into the strategies employed by opposing teams, enabling them to develop effective counterstrategies for a higher chance of victory.
 
-## Running Code
+Beyond the competitive aspect, statistics and data analysis are crucial in sports to track how the game evolves over time. This data-driven approach aids in adapting to changing trends and styles in the sport, as well as in refining player training and development to align with the modern game.
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+Given our collective passion for sports, our group sought to identify a subject that would resonate with each member. We stumbled upon a remarkable database containing detailed information about basketball games in the EuroLeague, which piqued our interest (further details provided in the Data section of the report).
 
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
+Recognizing the global significance of the NBA (National Basketball Association) in the world of basketball, as well as its substantial influence on other basketball organizations, we decided to focus our project on analyzing how the playing style has evolved over the years, with a particular emphasis on three-point shooting. We aimed to explore how changes in playing style impact game outcomes and sought to investigate various other statistical trends. Moreover, we intended to shed light on how the game's dynamics shift as it progresses, with strategies adapting based on the game's context---whether it's a closely contested match or not. This analysis also delves into foul statistics in different game scenarios. Lastly, we aimed to provide a comprehensive overview of individual player statistics and their impact on their respective teams.
 
 ```{r}
 #| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
-
-```{r}
-#| echo: false
-library(ggplot2)
+#| include: false
 source("Main_Wrangle.R")
 
+```
+
+```{r}
+#| echo: false
 #| hide: true
-#| echo: false
 #| message: false
-source("Main_Wrangle.R")
-dev.new()
+
 ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
   geom_bar(stat = "identity") +
   labs(title = "Mean of the 75 players with the lowest 3-point percentage",
@@ -47,16 +40,39 @@ ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
   scale_x_continuous(breaks = seq(min(df_mean_threebad$year), 
                                   max(df_mean_threebad$year), by = 1))  # Définir les étiquettes de l'axe x
 
-dev.off()
 ```
 
 # Data
 
-We chose our dataset from Kaggle, an data science competition plateform that publishes datasets.
+We selected our dataset from Kaggle, a prominent data science competition platform renowned for hosting a wide array of datasets.
 
-``` r
-x = 2
-y = 2
-z = x + y
-print(z)
+[The dataset](https://www.kaggle.com/datasets/efehandanisman/euroleague-play-by-play-data-20072020) in question provides comprehensive play-by-play information for Euroleague basketball games, spanning from 2007 through 2020. Each entry within this dataset encapsulates a specific game event, encompassing details such as the game minute, involved player and his respective team, action type, and whether it entails a two or three-point shot attempt, along with its successful outcome or miss. This invaluable dataset serves as a foundational resource for analyzing and understanding the intricacies of Euroleague basketball across the specified time period. This extensive dataset, containing over 1.6 million entries, required thorough wrangling to extract and uncover interesting stories.
+
+
+As an example, here is the first entry of this dataset.
+
+```{r}
+#| echo: false
+head(euroleague, 1)
+
 ```
+
+Given the wealth of data at our disposal, the process of discerning relevance and assembling pertinent information was essential. We meticulously organized the voluminous play-by-play entries, systematically aggregating them into coherent units of games. Subsequently, these games were further categorized into distinct years or seasons, thereby facilitating the extraction of comprehensive statistical insights related to teams and players. This strategic approach not only streamlines the analytical process but also enables a more granular exploration of performance metrics across the evolving landscape of Euroleague basketball.
+
+
+Parler de media white et media black team.
+2007 + 2015-2020 pas de dunk lay-up.
+Enlever les NA Renommer les équipes, noms presque similaires 
+Créer des nouvelles colonnes (total point, winner, etc.)
+
+# Exploratory data analysis
+
+blabla
+
+# Analysis
+
+blabla
+
+# Conclusion
+
+blabla
