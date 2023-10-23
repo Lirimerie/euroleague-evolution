@@ -112,7 +112,7 @@ team_stats_df_37 <- process_team_stats_data(stat_per_games_first37)
 team_stats_season_37 <- calculate_team_season_stats(team_stats_df_37)
 team_stats_df_4 <- process_team_stats_data(stat_per_games_last_4)
 team_stats_df_4_not_desperate <- team_stats_df_4|>
-  filter(Diff_Points_Min_35 <= 5 & Diff_Points_Min_35 > 0)
+  filter(Diff_Points_Min_35 <= 10 & Diff_Points_Min_35 > 0)
 team_stats_season_4 <- calculate_team_season_stats(team_stats_df_4)
 #team_stats_df_4_not_desperate wants to show tied game and not every game
 
