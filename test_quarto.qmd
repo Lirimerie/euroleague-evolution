@@ -9,7 +9,7 @@ output: html_document
 
 # Introduction
 
-We live in a world where the use of statistics and data analysis is of paramount importance to gain a comprehensive understanding of various subjects, allowing individuals to grasp the broader picture of what is happening around them. In the realm of sports, this emphasis on statistics is no exception, and is even the subject of movies like Moneyball. In contemporary sports, statistics play a pivotal role in ranking players and determining their relative skills and performance. Furthermore, teams increasingly rely on statistics to gain insights into the strategies employed by opposing teams, enabling them to develop effective counterstrategies for a higher chance of victory.
+We live in a world where the use of statistics and data analysis is of paramount importance to gain a comprehensive understanding of various subjects, allowing individuals to grasp the broader picture of what is happening around them. In the realm of sports, this emphasis on statistics is no exception. In contemporary sports, statistics play a pivotal role in ranking players and determining their relative skills and performance. Furthermore, teams increasingly rely on statistics to gain insights into the strategies employed by opposing teams, enabling them to develop effective counterstrategies for a higher chance of victory.
 
 Beyond the competitive aspect, statistics and data analysis are crucial in sports to track how the game evolves over time. This data-driven approach aids in adapting to changing trends and styles in the sport, as well as in refining player training and development to align with the modern game.
 
@@ -24,33 +24,11 @@ source("Main_Wrangle.R")
 
 ```
 
-```{r}
-#| echo: false 
-#| hide: true 
-#| message: false
-
-ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
-  geom_bar(stat = "identity") + 
-  labs(title = "Mean of the 75 players with the lowest 3-point percentage", 
-       x = "Year", 
-       y = "Percentage of 3-point success") + 
-  scale_y_continuous(limits = c(0, 0.6)) + 
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_x_continuous(breaks = seq(min(df_mean_threebad$year), 
-                                    max(df_mean_threebad$year), by = 1)) 
-
-```
-
 # Data
 
 We selected our dataset from Kaggle, a prominent data science competition platform renowned for hosting a wide array of datasets.
 
-
-[The dataset](https://www.kaggle.com/datasets/efehandanisman/euroleague-play-by-play-data-20072020) in question provides comprehensive play-by-play information for Euroleague basketball games, spanning from 2007 through 2020. Each entry within this dataset encapsulates a specific game event, encompassing details such as the game minute, involved player and his respective team, action type, and whether it entails a two or three-point shot attempt, along with its successful outcome or miss. This invaluable dataset serves as a foundational resource for analyzing and understanding the intricacies of Euroleague basketball across the specified time period. This extensive dataset, containing over 1.6 million entries, required thorough wrangling to extract and uncover interesting stories.
-
 The dataset in question provides comprehensive play-by-play information for Euroleague basketball games, spanning from 2007 through 2020. Each entry within this dataset encapsulates a specific game event, encompassing details such as the game minute, involved player and his respective team, action type, and whether it entails a two or three-point shot attempt, along with its successful outcome or miss. This invaluable dataset serves as a foundational resource for analyzing and understanding the intricacies of Euroleague basketball across the specified time period. This extensive dataset, containing over 1.6 million entries, required thorough wrangling to extract and uncover interesting stories.
-
 
 As an example, here is the first entry of this dataset.
 
@@ -59,120 +37,62 @@ As an example, here is the first entry of this dataset.
 head(euroleague, 1)
 ```
 
-Given the wealth of data at our disposal, the process of discerning relevance and assembling pertinent information was essential. We meticulously organized the voluminous play-by-play entries, systematically aggregating them into coherent units of games. Subsequently, these games were further categorized into distinct years or seasons, thereby facilitating the extraction of comprehensive statistical insights related to teams and players. This strategic approach not only streamlines the analytical process but also enables a more granular exploration of performance metrics across the evolving landscape of Euroleague basketball.Many variables were created for our use, we for example wanted to know the winner of the games, know what happens in the first 36 minutes compared to the last four minutes, and we wanted to use the accuracy percentage for some of our data analysis.
-
-
-After transforming the dataset into stat_per_games, we stumbled upon an outlier.
-
-```{r}
-#| echo: false
-tail(stat_per_games, 1)
-
-```
-
-In 2018, There was one game between Media Black Team and Media White Team, which ended with a score of 41-49. Those two teams never  appear in any other games and the score was sufficiently low to have a huge impact on our analysis. We decided to erase this game out of stat_per_games and to consider it as an outlier. 
-Many teams had to be renamed. We can take the example of Milan, which had for instance the name of EA7 EMPORIO ARMANI MILAN and the name of EA7 EMPORIO ARMANI MILANO in the same year.
-Sometimes, the lay-ups and the dunks were not counted as two points, but were counted separately as lay-ups or dunks. Sometimes, the data did not make any difference between two points, a dunk or a lay-up, which makes more sense, as a lay-up or a dunk counts as two-points. We decided to merge the three variables into another variable counting the number of two-points made in total.
-Some variables were created only with the goal of verifying that our code was correct. We decided to let those variables in our dataframes, because they might be useful to someone in the future.
+Given the wealth of data at our disposal, the process of discerning relevance and assembling pertinent information was essential. We meticulously organized the voluminous play-by-play entries, systematically aggregating them into coherent units of games. Subsequently, these games were further categorized into distinct years or seasons, thereby facilitating the extraction of comprehensive statistical insights related to teams and players. This strategic approach not only streamlines the analytical process but also enables a more granular exploration of performance metrics across the evolving landscape of Euroleague basketball.
 
 Parler de media white et media black team. 2007 + 2015-2020 pas de dunk lay-up. Enlever les NA Renommer les équipes, noms presque similaires Créer des nouvelles colonnes (total point, winner, etc.)
-
 
 # Exploratory data analysis
 
 blabla
-Def rebounds are weird
+
 # Analysis
 
+It is a common belief that having one of the best scorers in a sports league can significantly improve a team's chances of winning games throughout the season. To investigate the statistical validity of this belief, we conducted an analysis where we aggregated data for each player, calculating the total number of points they scored over the course of a season and then dividing it by the number of games they played. This allowed us to obtain the average number of points a player scored per game.
 
-je vous avais dit que j'avais une ps5?
+To further explore the relationship between a player's performance and their team's success, we employed the ***left_join*** function to merge the player's dataset with the team's dataset. This merging process enabled us to determine the win percentage of the top scorer for a given season and examine whether there is a correlation between a player's individual performance and their team's overall success.
 
-Exploring the influence of players with great statistics on a game's final outcome adds another layer of intrigue. In our analysis, we delve into the average points scored and the average defensive and offensive rebounds secured by players. The following visualizations depict the distribution of these averages over different seasons, shedding light on their impact on game dynamics.
+By conducting this analysis, we aim to gain insights into the impact of top scorers on team performance and potentially uncover statistical evidence to support or refute the commonly held notion that a top scorer can significantly contribute to a team's success in a sports league.
 
 ```{r}
 #| echo: false
 #| message: false
+#| hide: true
 
 best_in_class_player <- stat_per_game_player |>
   group_by(year)|>
-  filter(avg_defreb == max(avg_defreb, na.rm = TRUE))|>
+  filter(avg_points == max(avg_points, na.rm = TRUE))|>
   ungroup()
 
-ggplot(data = stat_per_game_player) + 
-  geom_point(mapping = aes(x = year, y = avg_defreb, color = PLAYER)) + 
-  geom_smooth(mapping = aes(x = year, y = avg_defreb)) + 
-  labs(title = "Average Defensive Rebound by Player", 
-       subtitle = str_wrap("The points represent different players"), 
-       x = "Season year", 
-       y = "Number of Rebounds") + 
+ggplot(stat_per_game_player) +
+  geom_point(mapping = aes(x = year, y = avg_points, color = PLAYER)) +
+  geom_smooth(mapping = aes(x = year, y = avg_points)) +
+  labs(title = "Average number of points scored per game",
+        subtitle = str_wrap("The points represent different players"),
+        x = "Season year",
+        y = "Number of points scored") +
+  theme_minimal() +
   theme(legend.position = "none")
 
-ggplot(best_in_class_player, aes(x = year, y = win_percentage)) + 
-  geom_line() + 
-  geom_point(mapping = aes(x= year, y = win_percentage)) + 
-  labs(title = "Win percentage of the best statistic player's team", 
-       x = "Season year", 
-       y = "Win percentage") + 
-  ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team), 
-                            data = best_in_class_player, 
-                            box.padding = 0.6, size = 1.5) + 
-  theme(legend.position = "none") + 
-  scale_y_continuous(limits = c(0,1))
-
-best_in_class_player <- stat_per_game_player|>
-  group_by(year)|> 
-  filter(avg_offreb == max(avg_offreb, na.rm = TRUE))|> 
-  ungroup()
-
-ggplot(data = stat_per_game_player) + 
-  geom_point(mapping = aes(x = year, y = avg_offreb, color = PLAYER)) + 
-  geom_smooth(mapping = aes(x = year, y = avg_offreb)) + 
-  labs(title = "Average Offensive Rebound by Player", 
-       subtitle = str_wrap("The points represent different players"), 
-       x = "Season year", 
-       y = "Number of Rebounds") + 
+ggplot(best_in_class_player, aes(x = year, y = win_percentage)) +
+  geom_line() +
+  geom_point(mapping = aes(x= year, y = win_percentage)) +
+  labs(title = "Win percentage of the best statistic player's team",
+        x = "Season year",
+        y = "Win percentage") +
+  ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team),
+                            data = best_in_class_player,
+                            box.padding = 0.4,
+                            size = 1.5) +
+  theme_minimal() +
   theme(legend.position = "none")
-
-ggplot(best_in_class_player, aes(x = year, y = win_percentage)) + 
-  geom_line() + 
-  geom_point(mapping = aes(x= year, y = win_percentage)) + 
-  labs(title = "Win percentage of the best statistic player's team", 
-       x = "Season year", 
-       y = "Win percentage") + 
-  ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team), 
-                            data = best_in_class_player, 
-                            box.padding = 0.6, size = 1.5) + 
-  theme(legend.position = "none") + 
-  scale_y_continuous(limits = c(0,1))
-
-best_in_class_player <- stat_per_game_player |> 
-  group_by(year) |> 
-  filter(avg_points == max(avg_points, na.rm = TRUE)) |> 
-  ungroup()
-
-ggplot(data = stat_per_game_player) + 
-  geom_point(mapping = aes(x = year, y = avg_points, color = PLAYER)) + 
-  geom_smooth(mapping = aes(x = year, y = avg_points)) + 
-  labs(title = "Average Defensive Rebound by Player", 
-       subtitle = str_wrap("The points represent different players"), 
-       x = "Season year", 
-       y = "Number of Points") + 
-  theme(legend.position = "none")
-
-ggplot(best_in_class_player, aes(x = year, y = win_percentage)) + 
-  geom_line() + 
-  geom_point(mapping = aes(x= year, y = win_percentage)) + 
-  labs(title = "Win percentage of the best statistic player's team", 
-       x = "Season year", 
-       y = "Win percentage") + 
-  ggrepel::geom_label_repel(aes(x = year, y = win_percentage, label = Team), 
-                            data = best_in_class_player, 
-                            box.padding = 0.6, size = 1.5) + 
-  theme(legend.position = "none") + 
-  scale_y_continuous(limits = c(0,1))
 ```
 
-We can see that
+These figures provide insights into the distribution of the average number of points scored by players across different seasons. A notable observation is the consistent trend, which is suspended around an average of approximately five points per game over the years. Despite the presence of players who excel with significantly higher points per game, the density of players clustered around the five-point mark seems to prevent a substantial overall improvement in the average points scored by individual players.
+
+In the second graph, we examine the winning percentage of the team with the top scorer (the highest points in the first plot). Surprisingly, the data reveals that having the top scorer on one's team during a particular year does not emerge as a significant variable for predicting victories. This suggests that the presence of a top scorer alone may not be a strong determinant of a team's success, and other factors likely play a more substantial role in achieving wins.
+
+We also examined the data regarding the number of defensive and offensive rebounds made by players in each season. Our interpretation of this data aligns with our earlier observations regarding the average number of points scored by players. It is evident that achieving success in basketball encompasses a multitude of factors, including tactics, psychology, and physical fitness. However, our analysis underscores that individual player performance, in terms of rebounds or points scored, may not, on its own, carry enough statistical significance to reliably predict a team's chances of winning. The path to victory in basketball appears to be more complex and multifaceted, involving a combination of various factors beyond individual player statistics.
+
 
 
 # Conclusion
