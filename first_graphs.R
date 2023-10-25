@@ -170,14 +170,14 @@ Effect_3Attempts_on_Win_no_distinction <- plot_effect_game(team_stats_df,
 
 print(Effect_3Attempts_on_Win_no_distinction)
 
-Effect_3_made_on_Win_no_distinction <- plot_effect_game(team_stats_df, 
+Effect_3_made_on_Win_distinction <- plot_separated_effect_2016(team_stats_df, 
                                                            ThreeS, 
                                                            "Three-points made",
-                                                           "It only counts when it is made",
-                                                           "Making shoots helps to win, no surprise")+
-  coord_cartesian( ylim = c(0.2, 0.8))
+                                                           "A three-pointer does not always count the same",
+                                                           "Each team shoots more often behind the three-point line")+
+  coord_cartesian( ylim = c(0.1, 0.9))
 
-print(Effect_3_made_on_Win_no_distinction)
+print(Effect_3_made_on_Win_distinction)
 
 Effect_3Attempts_on_Win_first37 <-
   plot_separated_effect_2016(
@@ -272,8 +272,7 @@ Effect_Foul_on_Win_last_4 <-   #can't be used because it's biased
 print(Effect_Foul_on_Win_last_4)
 
 Effect_Foul_on_Gap_last_4_not_Desperate <- 
-  plot_effect_game(filter(team_stats_df_4_not_desperate,
-                          looser_foul == Fouls_commited),
+  plot_effect_game(team_stats_df_4_not_desperate,
                    Fouls_commited,
                    "Fouls commited in the last four minutes",
                    "Fouls do not do miracles",
@@ -284,7 +283,7 @@ Effect_Foul_on_Gap_last_4_not_Desperate <-
   geom_hex(aes(Fouls_commited,Variation_Of_Gap))+
   scale_fill_gradientn(colors = plasma(100))+
   coord_fixed()+
-  coord_cartesian(xlim = c(0, 10))
+  coord_cartesian(xlim = c(0, 13))
 
 print(Effect_Foul_on_Gap_last_4_not_Desperate)
 
