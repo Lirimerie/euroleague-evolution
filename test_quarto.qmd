@@ -8,18 +8,18 @@ output: html_document
 ---
 
 # Introduction
-Overview and Motivation
-Related Work
-Research questions
 
+Overview and Motivation Related Work Research questions
 
-We live in a world where the use of statistics and data analysis is of paramount importance to gain a comprehensive understanding of various subjects, allowing individuals to grasp the broader picture of what is happening around them. In the realm of sports, this emphasis on statistics is no exception. In contemporary sports, statistics play a pivotal role in ranking players and determining their relative skills and performance. Furthermore, teams increasingly rely on statistics to gain insights into the strategies employed by opposing teams, enabling them to develop effective counterstrategies for a higher chance of victory.
+We live in a world where the use of statistics and data analysis is of paramount importance to gain a comprehensive understanding of various subjects, allowing individuals to grasp the broader picture of what is happening around them. In the realm of sports, this emphasis on statistics is no exception. In contemporary sports, statistics play a pivotal role in ranking players and determining their relative skills and performance. Furthermore, teams increasingly rely on statistics to gain insights into the strategies employed by opposing teams, enabling them to develop effective counter-strategies for a higher chance of victory.Notably, the impact of data-driven decision-making in sports is exemplified by "Moneyball," a book and film that brought to light how advanced statistical analysis revolutionized player recruitment and team strategies in baseball.
 
 Beyond the competitive aspect, statistics and data analysis are crucial in sports to track how the game evolves over time. This data-driven approach aids in adapting to changing trends and styles in the sport, as well as in refining player training and development to align with the modern game.
 
-Given our collective passion for sports, our group sought to identify a subject that would resonate with each member. We stumbled upon a remarkable database containing detailed information about basketball games in the EuroLeague, which piqued our interest (further details provided in the Data section of the report).
+Given our collective passion for sports, our group sought to identify a subject that would resonate with each member. We stumbled upon a remarkable database containing detailed information about basketball games in the Euro League, which piqued our interest (further details will be provided in the Data section of the report).
 
-Recognizing the global significance of the NBA (National Basketball Association) in the world of basketball, as well as its substantial influence on other basketball organizations, we decided to focus our project on analyzing how the playing style has evolved over the years, with a particular emphasis on three-point shooting. We aimed to explore how changes in playing style impact game outcomes and sought to investigate various other statistical trends. Moreover, we intended to shed light on how the game's dynamics shift as it progresses, with strategies adapting based on the game's context---whether it's a closely contested match or not. This analysis also delves into foul statistics in different game scenarios. Lastly, we aimed to provide a comprehensive overview of individual player statistics and their impact on their respective teams.
+Acknowledging our genuine interest in the NBA (National Basketball Association) and our somewhat limited familiarity with the EuroLeague, we decided to center our project on analyzing the evolution of playing styles over the years, with a specific focus on three-point shooting. We aimed to explore how changes in playing style impact game outcomes and sought to investigate various other statistical trends. Additionally, we aimed to shed light on how game dynamics shift as matches progress, with strategies adapting to different contexts, whether they are closely contested or not. This analysis also delves into foul statistics in various game scenarios. Lastly, we sought to provide a comprehensive overview of individual player statistics and their impact on their respective teams.
+
+While our primary focus was on data analysis and exploration, we did not conduct an extensive review of related works in this project. However, we discovered a valuable resource that provided the foundation for our data analysis. The dataset which played a pivotal role in our research, was used to compare the competitiveness in NCAA and European competitions [here](https://www.kaggle.com/code/efehandanisman/competitiveness-in-ncaa-and-european-competitions).
 
 ```{r}
 #| echo: false
@@ -29,16 +29,12 @@ source("first_graphs.R")
 ```
 
 # Data
-Sources
-Description
-Wrangling/cleaning
-Spotting mistakes and missing data (could be part of EDA too)
-Listing anomalies and outliers (could be part of EDA too)
 
+Sources Description Wrangling/cleaning Spotting mistakes and missing data (could be part of EDA too) Listing anomalies and outliers (could be part of EDA too)
 
 We selected our dataset from Kaggle, a prominent data science competition platform renowned for hosting a wide array of datasets.
 
-The dataset in question provides comprehensive play-by-play information for Euroleague basketball games, spanning from 2007 through 2020. Each entry within this dataset encapsulates a specific game event, encompassing details such as the game minute, involved player and his respective team, action type, and whether it entails a two or three-point shot attempt, along with its successful outcome or miss. This invaluable dataset serves as a foundational resource for analyzing and understanding the intricacies of Euroleague basketball across the specified time period. This extensive dataset, containing over 1.6 million entries, required thorough wrangling to extract and uncover interesting stories.
+[The dataset](https://www.kaggle.com/datasets/efehandanisman/euroleague-play-by-play-data-20072020/data) in question provides comprehensive play-by-play information for Euroleague and Eurocup basketball games, spanning from 2007 through 2020. Each entry within this dataset encapsulates a specific game event, encompassing details such as the game minute, involved player and his respective team, action type, and whether it entails a two or three-point shot attempt, along with its successful outcome or miss. This invaluable dataset serves as a foundational resource for analyzing and understanding the intricacies of Euroleague basketball across the specified time period. This extensive dataset, containing over 1.6 million entries, required thorough wrangling to extract and uncover interesting stories.
 
 As an example, here is the first entry of this dataset.
 
@@ -50,64 +46,80 @@ head(euroleague, 1)
 Given the wealth of data at our disposal, the process of discerning relevance and assembling pertinent information was essential. We meticulously organized the voluminous play-by-play entries, systematically aggregating them into coherent units of games. Subsequently, these games were further categorized into distinct years or seasons, thereby facilitating the extraction of comprehensive statistical insights related to teams and players. This strategic approach not only streamlines the analytical process but also enables a more granular exploration of performance metrics across the evolving landscape of Euroleague basketball.Many variables were created for our use, we for example wanted to know the winner of the games, know what happens in the first 36 minutes compared to the last four minutes, and we wanted to use the accuracy percentage for some of our data analysis.
 
 After transforming the dataset into stat_per_games, we stumbled upon an outlier.
+
 ```{r}
 #| echo: false
-tail(stat_per_games, 1)
+tail(select(stat_per_games,gamenumber,TeamA,TeamB,
+            Tot_Point_A,Tot_Point_B), 1)
 ```
-In 2018, There was one game between Media Black Team and Media White Team, which ended with a score of 41-49. Those two teams never  appear in any other games and the score was sufficiently low to have a huge impact on our analysis. We decided to erase this game out of stat_per_games and to consider it as an outlier. 
-Many teams had to be renamed. We can take the example of Milan, which had for instance the name of EA7 EMPORIO ARMANI MILAN and the name of EA7 EMPORIO ARMANI MILANO in the same year.
-Sometimes, the lay-ups and the dunks were not counted as two points, but were counted separately as lay-ups or dunks. Sometimes, the data did not make any difference between two points, a dunk or a lay-up, which makes more sense, as a lay-up or a dunk counts as two-points. We decided to merge the three variables into another variable counting the number of two-points made in total.
-Some variables were created only with the goal of verifying that our code was correct. We decided to let those variables in our dataframes, because they might be useful to someone in the future.
-# Exploratory data analysis
-Spotting mistakes and missing data (could be part of EDA too)
-Listing anomalies and outliers (could be part of EDA too)
-Mapping out the underlying structure
-Identifying the most important variables
-Univariate visualizations
-Multivariate visualizations
-Summary tables
 
+In 2018, There was one game between Media Black Team and Media White Team, which ended with a score of 41-49. Those two teams never appear in any other games and the score was sufficiently low to have a huge impact on our analysis. We decided to erase this game out of stat_per_games and to consider it as an outlier. Many teams had to be renamed. We can take the example of Milan, which had for instance the name of EA7 EMPORIO ARMANI MILAN and the name of EA7 EMPORIO ARMANI MILANO in the same year. At times, lay-ups and dunks were recorded separately, not as standard two-point shots. In certain cases, the data did not distinguish between a dunk, a lay-up, or any other standard two-point shot, because they all contribute two points in a basketball game. To streamline our analysis, we opted to consolidate these three variables into a single variable representing the total number of two-point shots made. Additionally, certain variables were introduced solely for the purpose of code validation. We chose to retain these variables in our dataframes, recognizing their potential utility to future users or researchers.
 
-After creating various data frames for different types of analysis we wanted to conduct we plotted various graphs to observe if there was a trend over the years for different statistical measures. Prior to commencing the project, we were aware that the players in the NBA started to attempt more and more three-point shots each year, so we initially examined how did the three-point statistics evolve over the years in the euroleague.
+Il faut montrer les dataframe finaux ou en parler
+
+Having a strong background in basketball, we also made a deliberate choice to place a special emphasis on fouls statistics. Notably, if a team accumulates a certain number of fouls within a specific time period, all subsequent fouls result in two free throws for the opponent. This rule introduces strategic possibilities, such as intentionally fouling the opponent towards the end of the game to compel them to attempt two free throws, and then attempting a three-pointer to gain a one-point advantage. To accommodate this, we created two distinct dataframes resembling **team_stats_df** with a slight distinction: one focused on the initial 36 minutes of the game and the other on the final 4 minutes. This division is predicated on the likelihood of teams committing more fouls in the closing moments of the game.
+# Exploratory data analysis 
+Spotting mistakes and missing data (could be part of EDA too) Listing anomalies and outliers (could be part of EDA too) Mapping out the underlying structure Identifying the most important variables Univariate visualizations Multivariate visualizations Summary tables
+
+After creating various data frames for different types of analysis we wanted to conduct, we plotted various graphs to observe if there was a trend over the years for different statistical measures. Prior to commencing the project, we were aware that the players in the NBA started to attempt more and more three-point shots each year, so we initially examined how did the three-point statistics evolve over the years in the euroleague.
 
 1er GRAPH EVOLUTION DES 3 POINTS A TRAVERS LES ANNEES (three pointer MADE)
+
 ```{r}
 #| echo: false
 print(plot_threeS_over_years)
 ```
-Indeed, as anticipated, we observed a consistent upward trend in the average number of three-pointers made per season over the years. However, the players did not start to get that much more accurate behind the three-point line. The player make more three-pointers, mainly because they just shoot more three-pointers, which came as a shocking surprise. 
-With this in mind, we aimed to gain an initial visual insight into whether the trend of teams making more three-pointers over the years has any influence on their win percentage. To do this, we created graphs showcasing the top three teams with the highest win percentages each season, in order to determine if these teams also happen to be the ones making the most three-pointers. 2eme graph les 3 EQUIPE AVEC LE MEILLEURE WIN PERCENTAGE.
+
+Indeed, as anticipated, we observed a consistent upward trend in the average number of three-pointers made per season over the years. However, the players did not start to get that much more accurate behind the three-point line. The players make more three-pointers, almost solely because they just shoot more three-pointers, which came as a shocking surprise. With this in mind, we aimed to gain an initial visual insight into whether the trend of teams making more three-pointers over the years has any influence on their win percentage. To do this, we created graphs showcasing the top three teams with the highest win percentages each season, in order to determine if these teams also happen to be the ones making the most three-pointers. 2eme graph les 3 EQUIPE AVEC LE MEILLEURE WIN PERCENTAGE.
+
+```{r}
+#| echo: false
+print(top_winners)
+```
 
 And we can see specially in the recent years that the teams that have the best win percentage if we compare with the plot above they often happen to be the ones with the highest three pointer made. prompting us to delve further into its analysis in the subsequent section.
 
 We employed a similar methodology to analyze various statistical aspects. However, for some statistics, we didn't observe any significant trends or peculiar patterns, and if there were, those were relatively small. After we tried to plot the evolution of defensive rebounds over the years, we stumbled upon a weird trend:
+
 ```{r}
 #| echo: false
 print(plot_defreb_over_years)
 ```
 
-Because of all these factors, we made a deliberate decision to place our primary focus on the  statistics about the three-pointers and the two-pointers. 
+In light of these factors, we consciously made the decision to center our primary focus on the analysis of statistical trends concerning both three-pointers and two-pointers.
 
-Having played a lot of basketball, we also chose to place a special focus on the fouls statistic. Indeed, If a team does enough fouls during a time-period, all the future fouls will lead to two free-throws for the opponent. This rule gives plenty of space for intriguing strategies, such as fouling the opponent at the end of the game to force them to shoot two free-throws, and then try to shoot a three-pointer in order to gain an advantage of one point. We had to create two different dataframes ressembling team_stats_df with a slight nuance: One would focus on the initial 37 minutes of the game and the other one on the final 4 minutes. This division is based on the likelihood of teams committing more fouls in the closing minutes of the game.
-
-Remarkably, our analysis also unveiled a striking pattern during the last 4 minutes of the game, wherein the greater the point difference (indicating a less closely contested game), the fewer fouls teams tended to commit.
+Remarkably, our analysis also uncovered an important pattern in the last 4 minutes of the game. It revealed that as the point difference increased, indicating a less closely contested game, teams tended to commit fewer fouls.
 
 GRAPH DES FAUTES DANS LES 4 DERNIERE MINUTES PAR DIFF DE POINTS AVEC SEULEMENT LES POINTS NOIR PAS CELUI AVEC LES POINTS ROUGE AUSSI.
 
-Having made this observation, we were keen to investigate the disparity in fouls between the initial 37 minutes and the last 4 minutes of gameplay, particularly when considering whether a game is closely contested or not. To define a closely contested game, we arbitrarily set a threshold: a game is considered tight if, when entering the last 4 minutes, there is an absolute point difference of fewer than 15 points.
+```{r}
+#| echo: false
+print(p1)
+```
+
+After making this observation, we recognized the need to filter our data to distinguish between closely contested and less closely contested games. To define a closely contested game, we established an arbitrary threshold: a game is categorized as tight if, when entering the last 4 minutes, the absolute point difference is less than 15 points.
 
 GRAPH AVEC LES 3 BARRES QUI MONTRE LE NOMBRE DE FAUTES DANS 3 CAS DIFFERENT
 
-Our analysis revealed a compelling trend: in tightly contested games, there is a relatively higher frequency of fouls, and on average, these fouls are more often committed by the losing team rather than the winning team. GRAPH QUI MONTRE LES FAUTES COMISE DANS LES 4 DERNIERE MINUTE PAR GAGNANT ET PERDANT. In the upcoming Analysis section, we will delve deeper into the strategy employed by losing teams, involving an increased frequency of fouls during the last 4 minutes, and its impact on the game's outcome.
+```{r}
+#| echo: false
+print(p2) #code with lightcoral color
+```
+
+Our analysis revealed an expected trend: in tightly contested games, there is a relatively higher frequency of fouls, and on average, these fouls are more often committed by the losing team rather than the winning team. GRAPH QUI MONTRE LES FAUTES COMISE DANS LES 4 DERNIERE MINUTE PAR GAGNANT ET PERDANT.
+
+```{r}
+#| echo: false
+print(plot_mean_foul)
+```
+
+In the upcoming Analysis section, we will delve deeper into the strategy employed by losing teams, involving an increased frequency of fouls during the last 4 minutes, and its impact on the game's outcome.
 
 Furthermore, in light of our observation of varying behavior in the last 4 minutes, we decided to explore whether this pattern extends to other statistics, which we will thoroughly analyze in the following section.
 
-
 # Analysis
-Answers to the research questions
-Different methods considered (by players/by team)
-Competing approaches
-Justifications
+
+Answers to the research questions Different methods considered (by players/by team) Competing approaches Justifications \## Effect of having a talent in the team
 
 It is a common belief that having one of the best scorers in a sports league can significantly improve a team's chances of winning games throughout the season. To investigate the statistical validity of this belief, we conducted an analysis where we aggregated data for each player, calculating the total number of points they scored over the course of a season and then dividing it by the number of games they played. This allowed us to obtain the average number of points a player scored per game.
 
@@ -153,9 +165,73 @@ These figures provide insights into the distribution of the average number of po
 
 In the second graph, we examine the winning percentage of the team with the top scorer (the highest points in the first plot). Surprisingly, the data reveals that having the top scorer on one's team during a particular year does not emerge as a significant variable for predicting victories. This suggests that the presence of a top scorer alone may not be a strong determinant of a team's success, and other factors likely play a more substantial role in achieving wins.
 
-We also examined the data regarding the number of defensive and offensive rebounds made by players in each season. Our interpretation of this data aligns with our earlier observations regarding the average number of points scored by players. It is evident that achieving success in basketball encompasses a multitude of factors, including tactics, psychology, and physical fitness. However, our analysis underscores that individual player performance, in terms of rebounds or points scored, may not, on its own, carry enough statistical significance to reliably predict a team's chances of winning. The path to victory in basketball appears to be more complex and multifaceted, involving a combination of various factors beyond individual player statistics.
+We also examined the data regarding the number of defensive and offensive rebounds made by players in each season. Our interpretation of this data aligns with our earlier observations regarding the average number of points scored by players. It is evident that achieving success in basketball encompasses a multitude of factors, including tactics, psychology, and physical fitness. However, our analysis underscores that individual player performance, in terms of rebounds or points scored, may not, on its own, carry enough statistical significance to reliably predict a team's chances of winning. The path to victory in basketball appears to be more complex and multifaceted, involving a combination of various factors beyond individual player statistics. \## Shooting from behind the three-point line: was it necessary ?
+
+### A first problem
+
+As previously mentioned, team_stats_df is a data frame that encompasses the statistics of each team for every game. It features a binary variable, "Winner," which takes on the value of 1 if the team won and 0 if not. The absence of draws in basketball simplifies the computation. Nevertheless, a straightforward regression analysis yielded unexpected results:
+
+```{r}
+#| echo: false
+print(Effect_3Attempts_on_Win_no_distinction)
+```
+
+According to this regression analysis, the probability of winning appears to be independent of the number of three-point attempts. The results suggest that increasing the number of three-pointers taken doesn't have a significant impact on the likelihood of winning. Instead, the key factor seems to be the ability to make those shots, whether they are two-pointers or three-pointers.
+
+```{r}
+#| echo: false
+print(Effect_3_made_on_Win_no_distinction)
+print(Effect_2_made_on_Win)
+```
+
+The initial regression result left much to be desired, as it merely suggested that making more shots increases a team's chances of winning, which is a fairly obvious observation. Additionally, the steeper slope for the probability of winning based on three-pointers made compared to two-pointers made is expected, given that three points are worth more than two. While this result didn't provide a clear explanation for the increasing interest in shooting beyond the three-point line, it was still surprising and prompted further investigation.
+
+We recognized that numerous factors could influence both the number of three-pointers made and the probability of winning, leading to potential correlations that could introduce bias. Leveraging our personal knowledge of basketball and our familiarity with the NBA, we decided to explore two distinct effects: the changing landscape of basketball post-2016 and the possibility that teams, especially when trailing, might attempt to shoot more three-pointers as a desperate maneuver to gain an advantage.
+### The basket ball after the 2015-2016 NBA season 
+
+A question that arose was: why would there be a growing interest in three-pointers if it seemingly doesn't translate to a higher chance of winning? One plausible explanation could be that sports analysts identified a correlation in the data available at that time, which may no longer hold true. To gain a better understanding, we decided to split the data before 2016 from the rest of the data.
+
+As depicted in a previous plot, teams began significantly increasing their three-point attempts around 2012, and by 2016, this strategy had become well-established. We chose 2016 as the dividing point because of the remarkable performance by Stephen Curry in the NBA. During the 2015-2016 season, the Golden State Warriors, led by Stephen Curry and Klay Thompson, shattered the record for the most games won in an NBA season. This team and these players are renowned for their emphasis on attempting and making more three-pointers than others, symbolizing the dominance of the three-point strategy. However, it's essential to recognize that we are not aware of a similar symbol of dominance in the Euroleague. It's important to note that this separation is not perfect, as the trend of increasing three-point attempts started before 2016 and continued afterward.
+```{r}
+#| echo: false
+print(Effect_3Attempts_on_Win)
+print(Effect_2Attempts_on_Win)
+```
+
+These results offer valuable insights into the dynamics at play. Before 2016, sports analysts identified a trend in their dataset, prompting an increasing number of teams to adopt a strategy of attempting more three-pointers. Paradoxically, this surge in three-point attempts eventually led to it being perceived as a less effective strategy. The analysts may not have fully considered that teams attempting more three-pointers were likely those more proficient at it, hence their higher win rates.
+
+Conversely, the data revealed that shooting more two-pointers was associated with a higher likelihood of winning. However, this effect is complex and challenging to interpret. Our next aim was to gain a more profound understanding of why winning teams tend to emphasize shooting more two-pointers.
+
+### Separating the last four minutes from the rest of the game
+
+Another significant factor to consider is this: when a team is trailing by a substantial margin towards the end of the game, they often attempt more three-pointers in an effort to stage a comeback and regain an advantage. Quantifying the exact level of desperation in a team is challenging, so we made a deliberate decision to isolate the last four minutes of the game for analysis. This choice is entirely arbitrary, but it addresses a challenge that had an impact on our initial regression analysis.
+```{r}
+#| echo: false
+print(Effect_3Attempts_on_Win_first37)
+print(Effect_3Attempts_on_Win_last_4)
+```
+
+These plots provided us with a deeper understanding of the situation. When a team opts to shoot more three-pointers without being in a desperate situation, their probability of winning naturally increases. However, this effect exhibited a slowdown over time, especially from 2016 onwards, coinciding with the growing trend of players taking more three-pointers.
+
+It's important to note that many teams attempting a significant number of three-pointers were, in reality, in a desperate situation and were shooting threes in the last four minutes to try to narrow the point gap between them and their opponents. The final graph does not suggest that attempting three-pointers at the end of the game is an unwise strategy. Instead, it indicates that teams trailing four minutes before the end of the game tend to shoot more three-pointers, and the larger the point gap, the more inclined they are to attempt three-pointers.
+## Fouls' strategy: A deep dive into the most well known strategy
+
+Fouls play a substantial role in the game of basketball. Generally, committing numerous fouls is considered a poor strategy. However, there are instances where fouling can be employed as a winning strategy. A well-known tactic, often referred to as "hack-a-player" or "hack-a-Shaq," named after Shaquille O'Neal, who was one of the initial targets of this strategy, has proven effective. The strategy is straightforward: in the final minutes of a game, players from the losing team intentionally foul the weakest free-throw shooter on the winning team. If the fouled player has already accumulated more than four fouls in the quarter, they receive two free-throw attempts, which they often struggle to convert. After these attempts, the losing team can attempt a three-pointer. If successful, this can result in a one-point or even a three-point advantage for the losing team. However, analyzing the effectiveness of this strategy is not straightforward. Using the simple probability of winning is insufficient, as the team employing this tactic is typically already losing. Moreover, data must be filtered to include only games with a point difference of fewer than 10 points in the last four minutes, as games with a greater difference tend to have distinct dynamics once the outcome is largely decided. After accounting for these considerations, we attempted to visualize the impact of this strategy.
+
+```{r}
+print(Effect_Foul_on_Gap_last_4_not_Desperate)
+print(Effect_Three_accuracy_on_Gap_last_4_not_Desperate)
+```
+
+What can be deduced from these graphs is that committing more than three fouls in the final few minutes typically aids the opposing team in solidifying its lead. Moreover, the team that is trailing must exhibit a high level of shooting accuracy during the last four minutes to gain an advantage. Moreover, in tightly contested games with a small point difference four minutes before the end, excessive fouling can sometimes be unnecessary. Teams may choose not to foul much, or at all, in such situations where every possession becomes critical, and fouling may not provide a significant advantage. Thus, it would be an oversimplification to conclude that fouling is universally inferior to not fouling. Additionally, it's important to note the significant presence of extreme values in the data. This underscores that this strategy can genuinely swing a game either in favor or against the team employing it, making it a high-risk, high-reward tactic.
+
 
 # Conclusion
-Take home message
-Limitations
-Future work?
+
+Take home message Limitations Future work?
+
+This project has effectively reinforced the notion that three-point shooting significantly contributed to winning games from 2007 to 2020. However, it is essential to acknowledge the project's limitations. Various external factors may be correlated with our variables and potentially influence game outcomes, introducing the potential for misleading results, as exemplified by our initial attempt to analyze the impact of the number of three-pointers.
+
+The dataset presented its own set of challenges, marked by inconsistencies, especially concerning the distinction between two-pointers, layups, and dunks. Additionally, the dataset's endpoint in 2020 restricts our analysis to a specific time frame. This project also prioritized the exploration of basketball statistics over in-depth statistical explanations, aligning with the course's primary objectives.
+
+The use of Generalized Additive Models (GAM) could enhance the project's analytical capabilities by allowing for the inclusion of additional variables and functionalizing specific aspects. The code could also be functionalized a little bit more. We encountered difficulties as we had trouble creating loops for generating plots. Future work could explore player statistics and try to find what makes a player important for the team. Future work could use the available unused variables and create new ones. Additionally, individuals with a deeper understanding of the Euroleague championship might identify new variables that significantly influence the analysis.

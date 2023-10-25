@@ -3,7 +3,8 @@ library (patchwork)
 library(ggrepel)
 library(gridExtra)
 source("Function.R")
-
+library(hexbin)
+library(viridis)
 #Statistics per team about three pointers
 
 #this script is where we create all the plot that we wanted 
@@ -160,6 +161,23 @@ Effect_3Attempts_on_Win <- plot_separated_effect_2016(team_stats_df,
 
 print(Effect_3Attempts_on_Win)
 
+Effect_3Attempts_on_Win_no_distinction <- plot_effect_game(team_stats_df, 
+                                                      three_attempts, 
+                                                      "Three-point attempts",
+                                                      "What's the point?",
+                                                      "Shooting a lot of three-pointer did not mean anything")+
+  coord_cartesian( ylim = c(0.2, 0.8))
+
+print(Effect_3Attempts_on_Win_no_distinction)
+
+Effect_3_made_on_Win_no_distinction <- plot_effect_game(team_stats_df, 
+                                                           ThreeS, 
+                                                           "Three-points made",
+                                                           "It only counts when it is made",
+                                                           "Making shoots helps to win, no surprise")+
+  coord_cartesian( ylim = c(0.2, 0.8))
+
+print(Effect_3_made_on_Win_no_distinction)
 
 Effect_3Attempts_on_Win_first37 <-
   plot_separated_effect_2016(
@@ -179,12 +197,23 @@ Effect_3Attempts_on_Win_last_4 <-
     team_stats_df_4,
     three_attempts,
     "Three-point attempts in the last 4 minutes of the game",
-    "Being desperate does not mean it is over",
-    "The more you attempt three-pointers, the smaller your chances to win are
-But there is always a pretty big chance")+
+    "Here is what falsed the results",
+    "The more you attempt three-pointers in the last minutes, the smaller your chances to win were")+
   coord_cartesian(xlim = c(0,9), ylim = c(0.2, 0.8))
 
 print(Effect_3Attempts_on_Win_last_4)
+
+Effect_3Attempts_on_Win_last_4_not_desperate <-
+  plot_separated_effect_2016(
+    team_stats_df_4_not_desperate,
+    three_attempts,
+    "Three-point attempts in the last 4 minutes of a tight game",
+    "A good strategy does not mean that it works all the time",
+    "The more you attempt three-pointers, the smaller your chances to win are
+But there is always a pretty big chance")+
+  coord_cartesian(xlim = c(0,9), ylim = c(0,1))
+
+print(Effect_3Attempts_on_Win_last_4_not_desperate)
 
 Effect_3accuracy_on_Win <- plot_effect_game(team_stats_df, 
                                             three_accuracy, 
@@ -197,7 +226,9 @@ print(Effect_3accuracy_on_Win)
 
 Effect_2Attempts_on_Win <- plot_separated_effect_2016(team_stats_df,
                                                       two_attempts, 
-                                                      "Two-point attempts")+
+                                                      "Two-point attempts",
+                                                      "Shooting two-pointers is a better idea",
+                                                      "Perhaps teams who are sure to win shoot more two-pointers")+
   coord_cartesian(ylim = c(0.2, 0.8))
 
 print(Effect_2Attempts_on_Win)
@@ -210,37 +241,54 @@ Effect_2accuracy_on_Win <- plot_effect_game(team_stats_df,
   coord_cartesian( xlim = c(0.3, 0.75), ylim = c(0,1))
 
 print(Effect_2accuracy_on_Win)
+Effect_2_made_on_Win <- plot_effect_game(team_stats_df, 
+                                            TwoS, 
+                                            "Two-point accuracy",
+                                            "Shooting two-pointers is a good idea too",
+                                            "At the end, the accuracy seems to be the best factor to estimate chances to win")+
+  coord_cartesian(ylim = c(0,1))
+
+print(Effect_2_made_on_Win)
 
 #effect of the total of points made or points taken were not that interesting
 
 Effect_Foul_on_Win <- plot_effect_game(team_stats_df, 
                                                       Fouls_commited, 
                                                       "Fouls commited",
-                                                      "Hack-a-Shaq does not work",
-                                       "You can't just foul the worst guy at shooting free-throws")+
+                                                      "Fouls are usually a bad idea",
+                                  "after five fouls you would be out and you might give them free-throws")+
   coord_cartesian(ylim = c(0.2, 0.8))
 
 print(Effect_Foul_on_Win)
 
-Effect_Foul_on_Win_last_4 <- 
+Effect_Foul_on_Win_last_4 <-   #can't be used because it's biased
   plot_effect_game(team_stats_df_4_not_desperate,
                    Fouls_commited,
                    "Fouls commited in the last four minutes",
                    "If the game is tight, you better foul a bit",
                    "6 fouls or less improve the chances to win")+
-  coord_cartesian(xlim = c(0,8), ylim = c(0.1, 0.9))
+  coord_cartesian(xlim = c(0,8), ylim = c(0.1, 1))
 
 print(Effect_Foul_on_Win_last_4)
 
 Effect_Foul_on_Gap_last_4_not_Desperate <- 
-  plot_effect_game(team_stats_df_4_not_desperate,
+  plot_effect_game(filter(team_stats_df_4_not_desperate,
+                          looser_foul == Fouls_commited),
                    Fouls_commited,
                    "Fouls commited in the last four minutes",
                    "Fouls do not do miracles",
                    "It can help gain a few points, but not that much",
                    Variation_Of_Gap,
-                   "Change in difference of points")+coord_cartesian()
+                   "Change in difference of points")+
+  coord_cartesian() +
+  geom_hex(aes(Fouls_commited,Variation_Of_Gap))+
+  scale_fill_gradientn(colors = plasma(100))+
+  coord_fixed()+
+  coord_cartesian(xlim = c(0, 10))
+
 print(Effect_Foul_on_Gap_last_4_not_Desperate)
+
+
 
 
 Effect_Three_accuracy_on_Gap_last_4_not_Desperate <- 
@@ -250,7 +298,11 @@ Effect_Three_accuracy_on_Gap_last_4_not_Desperate <-
                    "Either you shoot more precisely, or you don't",
                    "If a team has 10 more points than the other, it might not need to shoot from so far",
                    Variation_Of_Gap,
-                   "change in difference of points")+
+                   "change in difference of points") +
+  geom_hex(aes(three_accuracy,Variation_Of_Gap))+
+  scale_fill_gradientn(colors = plasma(10))+
+  coord_fixed()+
+  coord_cartesian(xlim = c(0, 1))+
   coord_cartesian()+
   geom_hline(yintercept = 0, linetype = "dashed", color = "red")
 
@@ -280,6 +332,7 @@ Effect_Three_made_on_Gap_last_4_not_Desperate <-
                    ThreeS,
                    "Number of three-pointers made")+
   coord_cartesian()
+
 
 print(Effect_Three_made_on_Gap_last_4_not_Desperate)
 
