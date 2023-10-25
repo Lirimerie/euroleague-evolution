@@ -363,14 +363,19 @@ grid.arrange(points19, points20, ncol = 2)
 
 
 
-
-p1 <- ggplot(data = stat_per_games_last_4) +
-  geom_point(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
+p1 <- ggplot(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
              aes(x = absolute_diff_points, y = tot_foul)) +
+  geom_hex() +
+  coord_fixed()+
+  labs(title = "test",
+       x = " diff points",
+       y = "number of fouls")+
+  scale_fill_viridis_c(option="magma", begin=0.1, end=0.9,
+                     direction = -1)+
   geom_smooth(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
-              aes(x = absolute_diff_points, y = tot_foul)) +
-  theme(legend.position = "none")
+              aes(x = absolute_diff_points, y = tot_foul)) 
 p1
+
 
 
 
