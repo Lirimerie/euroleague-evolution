@@ -250,8 +250,8 @@ player_stats_plot_over_years <- function(stat_per_game_player, variable, title, 
 }
 
 AvgDefReb_plot <- player_stats_plot_over_years(stat_per_game_player, avg_defreb,
-                                    "Average Defensive Rebound by Player",
-                                    "Number of Rebound")
+                                               "Average Defensive Rebound by Player",
+                                               "Number of Rebound")
 
 AvgOffReb_plot <- player_stats_plot_over_years(stat_per_game_player, avg_offreb,
                                                "Average Offensive Rebound by Player",
@@ -260,4 +260,16 @@ AvgOffReb_plot <- player_stats_plot_over_years(stat_per_game_player, avg_offreb,
 AvgNumPts_plot <- player_stats_plot_over_years(stat_per_game_player, avg_points,
                                                "Average Number of Points Scored by Player",
                                                "Number of points")
-  
+
+library(viridis)
+
+ggplot(stat_per_game_player, aes(x = year, y = avg_points)) +
+  geom_hex() +
+  coord_fixed() +
+  labs(title = "Density of average number of points\nscored per game throughout years",
+       x = "Season year",
+       y = "Average number of points scored") +
+  scale_fill_viridis(option = "magma", begin = 0.1, end = 0.9, 
+                     direction = -1, 
+                     limits = c(0, max(stat_per_game_player$avg_points))) +
+  theme_minimal()
