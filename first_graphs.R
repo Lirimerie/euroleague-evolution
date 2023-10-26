@@ -141,8 +141,8 @@ top_winners<-ggplot(top_teams, aes(x = as.factor(year),
   geom_bar(stat = "identity", position = "dodge") +
   geom_text(aes(label = Team), position = position_dodge(width = 0.9),
             angle = 90, hjust = 1, vjust = 0.5) + 
-  labs(title = "Les 3 équipes avec le meilleur win percentage chaque année",
-       x = "Année",
+  labs(title = "Top 3 teams with the highest win percentage",
+       x = "Year",
        y = "Win Percentage") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
@@ -362,19 +362,19 @@ grid.arrange(points19, points20, ncol = 2)
 
 
 
-p1 <- ggplot(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
+fouldecrease <- ggplot(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
              aes(x = absolute_diff_points, y = tot_foul)) +
   geom_hex() +
   coord_fixed()+
-  labs(title = "test",
-       x = " diff points",
-       y = "number of fouls")+
+  labs(title = "Fouls in the last 4 minutes",
+       subtitle = "The number of foul decrease if the game is less tight",
+       x = " Difference of points when we enter in the last 4 minutes",
+       y = "Number of fouls")+
   scale_fill_viridis_c(option="magma", begin=0.1, end=0.9,
                      direction = -1)+
   geom_smooth(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
               aes(x = absolute_diff_points, y = tot_foul)) 
-p1
-
+fouldecrease 
 
 
 
@@ -408,7 +408,7 @@ mean_foul_relative_minutes_last4_pas_serré <-
   mean(stat_per_games_last_4$foul_relative_minutes
        [stat_per_games_last_4$absolute_diff_points >= 15], 
        na.rm = TRUE)
-df <- data.frame(Dataset = c("first_part_game", "tight_game", "non_tight_game"),
+df <- data.frame(Dataset = c("first part game", "tight game", "non tight game"),
                  MeanFoulRelativeMinutes = 
                    c(mean_foul_relative_minutes_first37,
                      mean_foul_relative_minutes_last4_serré,
@@ -416,18 +416,19 @@ df <- data.frame(Dataset = c("first_part_game", "tight_game", "non_tight_game"),
 p2 <- ggplot(data = df, aes(x = Dataset,
                             y = MeanFoulRelativeMinutes, fill = Dataset)) +
   geom_bar(stat = "identity") +
-  scale_fill_manual(values = c("first_part_game" = "blue",
-                               "tight_game" = "red",
-                               "non_tight_game" = "lightcoral"),
-                    labels = c("first_part_game" = "first_part_game",
-                               "tight_game" = "tight_game",
-                               "non_tight_game" = "non_tight_game"))+
+  labs(title = "Foul per minute", subtitle = "Compare first part of the game(blue) with the last 4 minutes(red)")+
+  scale_fill_manual(values = c("first part game" = "blue",
+                               "tight game" = "red",
+                               "non tight game" = "lightcoral"),
+                    labels = c("first_part_game" = "first part game",
+                               "tight_game" = "tight game",
+                               "non_tight_game" = "non tight game"))+
   theme(legend.position = "bottom") +
   ylab("Mean Foul Relative Minutes") +
   xlab(NULL)
 p2
 
-subset_data <- subset(stat_per_games_last_4, absolute_diff_points <= 15)
+subset_data <- subset(stat_per_games_last_4, absolute_diff_points <= 10)
 
 # Calculer la moyenne de looser_foul et winner_foul dans les données filtrées
 mean_looser_foul <- mean(subset_data$looser_foul, na.rm = TRUE)
@@ -437,7 +438,8 @@ labels <- c("Looser", "Winner")
 plot_mean_foul <- ggplot(data = NULL, aes(x = labels)) +
   geom_bar(stat = "identity", aes(y = c(mean_looser_foul, mean_winner_foul)),
            fill = c("red", "blue")) +
-  labs(y = "Moyenne des Foul",
-       title = "Moyenne des Foul pour Looser et Winner") +
-  theme(axis.text.x = element_blank())  # Pour masquer les étiquettes de l'axe x
+  labs(y = "Mean of fouls",
+       title = "Mean of fouls in the last 4 minutes",
+       subtitle = "The loosing team tends to do more fouls")
+
 print(plot_mean_foul)
