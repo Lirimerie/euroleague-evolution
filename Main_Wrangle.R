@@ -1,7 +1,14 @@
-#Import the libraires and the dataset
+#Import the dataset and libraries
 library(tidyverse)
+library(hexbin)
+library(viridis)
+library(ggplot2)
+library (patchwork)
+library(ggrepel)
+library(gridExtra)
 
-euroleague<-read.csv("data/euroleague.csv")
+euroleague<-read.csv("data/euroleague.csv") 
+#We only focused on Euroleague, not Eurocup
 
 unique_playtypes <- unique(euroleague$PLAYINFO)
 unique_playtypes
@@ -21,6 +28,16 @@ euroleague <- euroleague |>
     PLAYINFO == "Free Throw In" ~ 1,
     TRUE ~ 0
   ))
+
+
+
+
+#While making our project, we wrote 37 instead of 36(minutes),
+# as it was too late to modify everything, we decided to keep 37
+# for the names of variables, it's definitely not good but we
+# did not have time to change it
+
+
 
 source("CreationDataFrame.R") #See CreationDataFrame.R for more explanations
 stat_per_games <- CreationDataFrameTEST(euroleague)
@@ -118,3 +135,4 @@ team_stats_season_4 <- calculate_team_season_stats(team_stats_df_4)
 
 
 source("playerdf_script.R") # Creates the player's dataframes and statistics
+source("first_graphs.R") # use Functions.R to make interesting graphs

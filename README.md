@@ -10,5 +10,5 @@ Important: all the following libraries are important: tidyverse, ggplot2, hexbin
 ## How do the scripts work together?
 
 Main_Wrangle performs the data cleaning/wrangling of the initial dataset and creates datframes per team per game, as well as dataframes per team per season, and calling functions created in CreationDataDrame and Ranking. As the data wrangling/cleaning, EDA and graphical analysis for individual statistics did not take as much effort, we put all of them in playerdf_script and called this script at the end of Main_Wrangle.
-first_graphs is our script containg all the plots that were used for our presentation/report, and some others that were interesting but would have made the report way too big. This script usually calls functions from the Functions script, as they are about 80% similar to other graphs
+first_graphs is our script containg all the plots that were used for our presentation/report, and some others that were interesting but would have made the report way too big. This script usually calls functions from the Functions script, as they are about 80% similar to other graphs. Main_Wrangle call first_graphs at the end, in order for everything to run at once if someone runs the entire Main_Wrangle script.
 

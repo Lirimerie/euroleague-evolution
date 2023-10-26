@@ -180,7 +180,7 @@ process_team_stats_data <- function(data) {
   return(processed_data)
 }
 
-#ex
+# Example of usage
 #team_stats_df <- process_team_stats_data(stat_per_games)
 
 calculate_team_season_stats <- function(data) {
