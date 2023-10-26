@@ -50,9 +50,9 @@ team_stats_plot_over_years <- function(team_stats_season,
     theme(legend.position = "none",
           panel.background = element_rect(fill = "white"),
           panel.grid = element_line(color = "gray80", size = 0.2)
-          )
+    )
   #For some reasons, didn't work calling theme_minimal()
-                              
+  
   # Assign the plots to custom names
   assign(plot_name, p1, envir = .GlobalEnv)
   
@@ -76,14 +76,14 @@ plot_separated_effect_2016 <- function(data,
                                        x_label,titre = "",sous_titre = "",
                                        y_variable= winner,
                                        y_label = "Win percentage"
-                                        ) {
+) {
   p <- ggplot(data = data) +
     geom_smooth(data = data,
                 aes(x = {{ variable }},
                     y = {{ y_variable }},
                     color = When,
-                    ),
-                     alpha = 0.15 ) +
+                ),
+                alpha = 0.15 ) +
     labs(title = titre,
          subtitle = sous_titre,
          x = x_label,
@@ -112,7 +112,7 @@ plot_effect_game <- function(data, variable, x_label,
          x = x_label,
          y = y_label) +
     theme(legend.position = "bottom") +
- # coord_cartesian( ylim = c(0, 1)) +
+    # coord_cartesian( ylim = c(0, 1)) +
     theme_minimal()
   
   return(p)
