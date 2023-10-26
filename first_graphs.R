@@ -13,12 +13,12 @@ source("Function.R")
 #plot the evolution of a certain statistic over the years
 
 plots <- team_stats_plot_over_years(team_stats_season,
-                             average_threeS,
-                             "It started well before 2016",
-                             "Average three-pointer made
+                                    average_threeS,
+                                    "It started well before 2016",
+                                    "Average three-pointer made
 by a team in a season",
-                             "plot_threeS_over_years"
-                                    )
+                                    "plot_threeS_over_years"
+)
 plot_threeS_over_years <- plot_threeS_over_years +
   labs(subtitle = "There has been a clear increase in the number of three-pointer made per game,
 and the best teams are usually the same")
@@ -31,20 +31,20 @@ plots <-
                              "Average three-pointer attempted 
 by the team, per season",
                              "plot_three_attempts_over_years"
-)
+  )
 plot_three_attempts_over_years<- plot_three_attempts_over_years +
   labs(subtitle = "There has also been a clear increase in the number of three-pointer attempted,
 and they'e not necessarily the same teams as before")
 #plot_three_attempts_over_years
 
 plots <- team_stats_plot_over_years(
-    team_stats_season,
-    avg_3pt_accuracy,
-    "Why bother to shoot better, just shoot more",
-    "Average accuracy of a team while 
+  team_stats_season,
+  avg_3pt_accuracy,
+  "Why bother to shoot better, just shoot more",
+  "Average accuracy of a team while 
 shooting three-pointers, per season",
-    "plot_three_accuracy_over_years"
-    )
+  "plot_three_accuracy_over_years"
+)
 plot_three_accuracy_over_years <- plot_three_accuracy_over_years +
   labs(subtitle = "The increase in accuracy is relatively small  compared to the increase in attempts")
 #plot_three_accuracy_over_years
@@ -152,7 +152,7 @@ top_winners<-ggplot(top_teams, aes(x = as.factor(year),
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   theme(legend.position = "none")
-  
+
 #top_winners
 
 
@@ -172,19 +172,19 @@ Effect_3Attempts_on_Win <- plot_separated_effect_2016(team_stats_df,
 #Effect_3Attempts_on_Win
 
 Effect_3Attempts_on_Win_no_distinction <- plot_effect_game(team_stats_df, 
-                                                      three_attempts, 
-                                                      "Three-point attempts",
-                                                      "What's the point?",
-                                                      "Shooting a lot of three-pointer did not mean anything")+
+                                                           three_attempts, 
+                                                           "Three-point attempts",
+                                                           "What's the point?",
+                                                           "Shooting a lot of three-pointer did not mean anything")+
   coord_cartesian( ylim = c(0.2, 0.8))
 
 #Effect_3Attempts_on_Win_no_distinction
 
 Effect_3_made_on_Win_distinction <- plot_separated_effect_2016(team_stats_df, 
-                                                           ThreeS, 
-                                                           "Three-points made",
-                                                           "A three-pointer does not always count the same",
-                                                           "Each team shoots more often behind the three-point line")+
+                                                               ThreeS, 
+                                                               "Three-points made",
+                                                               "A three-pointer does not always count the same",
+                                                               "Each team shoots more often behind the three-point line")+
   coord_cartesian( ylim = c(0.1, 0.9))
 
 #Effect_3_made_on_Win_distinction
@@ -252,10 +252,10 @@ Effect_2accuracy_on_Win <- plot_effect_game(team_stats_df,
 #Effect_2accuracy_on_Win
 
 Effect_2_made_on_Win <- plot_effect_game(team_stats_df, 
-                                            TwoS, 
-                                            "Two-point accuracy",
-                                            "Shooting two-pointers is a good idea too",
-                                            "At the end, the accuracy seems to be the best factor to estimate chances to win")+
+                                         TwoS, 
+                                         "Two-point accuracy",
+                                         "Shooting two-pointers is a good idea too",
+                                         "At the end, the accuracy seems to be the best factor to estimate chances to win")+
   coord_cartesian(ylim = c(0,1))
 #Effect_2_made_on_Win
 
@@ -263,10 +263,10 @@ Effect_2_made_on_Win <- plot_effect_game(team_stats_df,
 #effect of the total of points made or points taken were not that interesting
 
 Effect_Foul_on_Win <- plot_effect_game(team_stats_df, 
-                                                      Fouls_commited, 
-                                                      "Fouls commited",
-                                                      "Fouls are usually a bad idea",
-                                  "after five fouls you would be out and you might give them free-throws")+
+                                       Fouls_commited, 
+                                       "Fouls commited",
+                                       "Fouls are usually a bad idea",
+                                       "after five fouls you would be out and you might give them free-throws")+
   coord_cartesian(ylim = c(0.2, 0.8))
 
 
@@ -379,10 +379,10 @@ p1 <- ggplot(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
        x = " Difference of points when we enter in the last 4 minutes",
        y = "Number of fouls")+
   scale_fill_viridis_c(option="magma", begin=0.1, end=0.9,
-                     direction = -1)+
+                       direction = -1)+
   geom_smooth(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
               aes(x = absolute_diff_points, y = tot_foul)) 
- 
+
 #p1
 
 
@@ -449,5 +449,3 @@ plot_mean_foul <- ggplot(data = NULL, aes(x = labels)) +
   labs(y = "Mean of fouls",
        title = "Mean of fouls in the last 4 minutes",
        subtitle = "The loosing team tends to do more fouls")
-
-
