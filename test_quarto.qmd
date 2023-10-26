@@ -178,7 +178,7 @@ According to this regression analysis, the probability of winning appears to be 
 
 ```{r}
 #| echo: false
-print(Effect_3_made_on_Win_no_distinction)
+print(Effect_3_made_on_Win_distinction)
 print(Effect_2_made_on_Win)
 ```
 

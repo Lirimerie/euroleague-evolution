@@ -149,7 +149,7 @@ top_winners<-ggplot(top_teams, aes(x = as.factor(year),
   theme(legend.position = "none")
   
 top_winners
-grid.arrange(top_winners,p1,nrow=2)
+
 
 
 Effect_3Attempts_on_Win <- plot_separated_effect_2016(team_stats_df, 
@@ -307,7 +307,6 @@ Effect_Three_accuracy_on_Gap_last_4_not_Desperate <-
 
 print(Effect_Three_accuracy_on_Gap_last_4_not_Desperate)
 
-print(intersection_x)
 
 Effect_Three_attempts_on_Gap_last_4_not_Desperate <- 
   plot_effect_game(team_stats_df_4_not_desperate,
