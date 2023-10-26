@@ -362,7 +362,7 @@ grid.arrange(points19, points20, ncol = 2)
 
 
 
-fouldecrease <- ggplot(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
+p1 <- ggplot(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
              aes(x = absolute_diff_points, y = tot_foul)) +
   geom_hex() +
   coord_fixed()+
@@ -374,7 +374,7 @@ fouldecrease <- ggplot(data = subset(stat_per_games_last_4, absolute_diff_points
                      direction = -1)+
   geom_smooth(data = subset(stat_per_games_last_4, absolute_diff_points < 30),
               aes(x = absolute_diff_points, y = tot_foul)) 
-fouldecrease 
+p1 
 
 
 
