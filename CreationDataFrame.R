@@ -93,11 +93,11 @@ CreationDataFrameTEST <- function(euroleague) {
                                      "CM", "Foul_commited", "Foul_commited")
   stat_per_games <- process_playtype(euroleague, stat_per_games,
                                      "RV", "Foul_Drawn", "Foul_Drawn")
-
+  
   
   return(stat_per_games)
 }
-  
+
 
 #we create the same dataframe but taking into account only the last 4 minutes 
 
@@ -163,11 +163,11 @@ CreationDataFrame_last4 <- function(euroleague) {
 #same thing but here for the first 37 minutes of the game 
 
 CreationDataFrame_37 <- function(euroleague) {
-
+  
   euroleague <- euroleague |>
     filter(MINUTE <= 36)
   
-
+  
   stat_per_games <- euroleague |>
     group_by(gamenumber, year) |>
     summarise(
@@ -243,6 +243,6 @@ uniformisation <- function(data){
            Deff_Reb_B = coalesce(Deff_Reb_B,0),
            Foul_commited_A = coalesce(Foul_commited_A,0),
            Foul_commited_B = coalesce(Foul_commited_B,0)
-           )|>
+    )|>
     select(-LUF_A,-LUF_B,-LUS_A,-LUS_B,-DUNK_A,-DUNK_B)
 }
