@@ -101,7 +101,9 @@ plot_separated_effect_2016 <- function(data,
 # The following function just does a regression in general
 plot_effect_game <- function(data, variable, x_label,
                              titre = "", sous_titre = "",
-                             y_variable = winner, y_label = "Win percentage") {
+                             y_variable = winner,
+                             y_label = "Win percentage") {
+  
   label_text = "General trend over the years"
   p <- ggplot(data = data) +
     geom_smooth(data = data,
