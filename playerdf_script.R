@@ -3,7 +3,7 @@ euroleague<-read.csv("data/euroleague.csv")
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
-
+library(viridis)
 
 # Define a function to process player statistics
 PlayerFunctiondf <- function(euroleague) {
@@ -105,7 +105,8 @@ stat_per_game_player <- PlayerFunctiondf(euroleague) |>
   )|>
   select(-TeamA, -TeamB) |>
   left_join(team_stats_season, by = c("year", "Team")) |>
-  mutate(points_made = (tot_point2*2 + tot_point3*3 + tot_FT + tot_Layup*2 + tot_Dunk*2),
+  mutate(points_made =(tot_point2*2 + tot_point3*3 + 
+                         tot_FT + tot_Layup*2 + tot_Dunk*2),
          avg_defreb = tot_DefReb / total_games,
          avg_offreb = tot_OffReb / total_games,
          avg_points = points_made / total_games
@@ -218,7 +219,8 @@ ggplot(df_mean_threebad, aes(x = year, y = mean_three_perc)) +
                                   max(df_mean_threebad$year), by = 1))  # Définir les étiquettes de l'axe x
 
 
-player_stats_plot_over_years <- function(stat_per_game_player, variable, title, y_label) {
+player_stats_plot_over_years <- function(stat_per_game_player,
+                                         variable, title, y_label) {
   
   best_in_class_player <- stat_per_game_player |>
     group_by(year) |>
@@ -249,24 +251,29 @@ player_stats_plot_over_years <- function(stat_per_game_player, variable, title, 
   merged <- grid.arrange(p1, p2, ncol = 1)
 }
 
-AvgDefReb_plot <- player_stats_plot_over_years(stat_per_game_player, avg_defreb,
-                                               "Average Defensive Rebound by Player",
-                                               "Number of Rebound")
+AvgDefReb_plot <- player_stats_plot_over_years(
+  stat_per_game_player, 
+  avg_defreb,
+  "Average Defensive Rebound by Player",
+  "Number of Rebound")
 
-AvgOffReb_plot <- player_stats_plot_over_years(stat_per_game_player, avg_offreb,
-                                               "Average Offensive Rebound by Player",
-                                               "Number of Rebound")
+AvgOffReb_plot <- player_stats_plot_over_years(
+  stat_per_game_player, 
+  avg_offreb,
+  "Average Offensive Rebound by Player",
+  "Number of Rebound")
 
-AvgNumPts_plot <- player_stats_plot_over_years(stat_per_game_player, avg_points,
-                                               "Average Number of Points Scored by Player",
-                                               "Number of points")
+AvgNumPts_plot <- player_stats_plot_over_years(
+  stat_per_game_player, avg_points,
+  "Average Number of Points Scored by Player",
+  "Number of points")
 
-library(viridis)
 
 ggplot(stat_per_game_player, aes(x = year, y = avg_points)) +
   geom_hex() +
   coord_fixed() +
-  labs(title = "Density of average number of points\nscored per game throughout years",
+  labs(title = "Density of average number of 
+points scored per game throughout years",
        x = "Season year",
        y = "Average number of points scored") +
   scale_fill_viridis(option = "magma", begin = 0.1, end = 0.9, 

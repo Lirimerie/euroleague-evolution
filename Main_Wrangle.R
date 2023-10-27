@@ -10,10 +10,6 @@ library(gridExtra)
 euroleague<-read.csv("data/euroleague.csv") 
 #We only focused on Euroleague, not Eurocup
 
-unique_playtypes <- unique(euroleague$PLAYINFO)
-unique_playtypes
-
-
 euroleague <- euroleague |>
   mutate(PLAYINFO = str_remove(PLAYINFO, "\\s*\\([^)]+\\)"))
 
@@ -28,7 +24,6 @@ euroleague <- euroleague |>
     PLAYINFO == "Free Throw In" ~ 1,
     TRUE ~ 0
   ))
-
 
 
 
@@ -116,9 +111,10 @@ stat_per_games_last_4 <- stat_per_games_last_4|>
 
 
 
-
-source("Ranking.R") #Creates usable dataframes with statistics per team, per game
+#Creates usable dataframes with statistics per team, per game
 #and pert team, per season
+source("Ranking.R")
+
 
 team_stats_df <- process_team_stats_data(stat_per_games)
 team_stats_season <- calculate_team_season_stats(team_stats_df)
@@ -136,3 +132,4 @@ team_stats_season_4 <- calculate_team_season_stats(team_stats_df_4)
 
 source("playerdf_script.R") # Creates the player's dataframes and statistics
 source("first_graphs.R") # use Functions.R to make interesting graphs
+

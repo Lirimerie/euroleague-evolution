@@ -1,6 +1,7 @@
 #Make a ton of graphs, but many of them were finally not used as
 # the report was already long enough
 source("Function.R")
+library(gridExtra)
 #Statistics per team about three pointers
 
 #this script is where we create all the plot that we wanted
@@ -15,14 +16,13 @@ source("Function.R")
 plots <- team_stats_plot_over_years(team_stats_season,
                                     average_threeS,
                                     "It started well before 2016",
-                                    "Average three-pointer made
-by a team in a season",
+                                    "Average three-pointer made by a team in a season",
                                     "plot_threeS_over_years"
 )
 plot_threeS_over_years <- plot_threeS_over_years +
-  labs(subtitle = "There has been a clear increase in the number of three-pointer made per game,
-and the best teams are usually the same")
-#plot_threeS_over_years
+  labs(subtitle = "There has been a clear increase in 
+the number of three-pointer made per game,and the best teams are usually the same")
+plot_threeS_over_years
 
 plots <- 
   team_stats_plot_over_years(team_stats_season,
@@ -32,9 +32,10 @@ plots <-
 by the team, per season",
                              "plot_three_attempts_over_years"
   )
+
 plot_three_attempts_over_years<- plot_three_attempts_over_years +
-  labs(subtitle = "There has also been a clear increase in the number of three-pointer attempted,
-and they'e not necessarily the same teams as before")
+  labs(subtitle = "There has also been a clear increase in thenumber of 
+three-pointer attempted, and they'e not necessarily the same teams as before")
 #plot_three_attempts_over_years
 
 plots <- team_stats_plot_over_years(
@@ -45,26 +46,33 @@ plots <- team_stats_plot_over_years(
 shooting three-pointers, per season",
   "plot_three_accuracy_over_years"
 )
+
+
 plot_three_accuracy_over_years <- plot_three_accuracy_over_years +
-  labs(subtitle = "The increase in accuracy is relatively small  compared to the increase in attempts")
+  labs(subtitle = "The increase in accuracy is relatively small 
+compared to the increase in attempts")
 #plot_three_accuracy_over_years
 
 #Statistics per team about two pointers
-plots <- team_stats_plot_over_years(team_stats_season,average_twoS,
-                                    "Did nothing change?",
-                                    "Average number of two-pointer made by the team, per season",
-                                    "plot_twoS_over_years"
+plots <- team_stats_plot_over_years(
+  team_stats_season,average_twoS,
+  "Did nothing change?",
+  "Average number of two-pointer made by the team, 
+  per season",
+  "plot_twoS_over_years"
 )
+
 plot_twoS_over_years <- plot_twoS_over_years +
   labs(subtitle = "At first, we would think that the players didn't change their way to play")
 #plot_twoS_over_years
 
-plots <- team_stats_plot_over_years(team_stats_season,average_two_attempts,
-                                    "Two-pointers aren't sensational enough anymore",
-                                    "Average number of two-pointer attempted 
-by a team, per season",
-                                    "plot_two_attempts_over_years"
-)
+plots <- team_stats_plot_over_years(
+  team_stats_season,average_two_attempts,
+  "Two-pointers aren't sensational enough anymore",
+  "Average number of two-pointer attempted by a team,
+  per season",
+  "plot_two_attempts_over_years")
+
 plot_two_attempts_over_years <- plot_two_attempts_over_years +
   labs(subtitle = "Players started to care less about two-pointers after 2012")
 #plot_two_attempts_over_years
@@ -80,12 +88,16 @@ plot_two_accuracy_over_years <- plot_two_accuracy_over_years+
 There is also less unity in the name of the best teams at it")
 #print(plot_two_accuracy_over_years)
 
+
 #Statistics per team about points made
-plots <- team_stats_plot_over_years(team_stats_season,average_points,
-                                    "The average of points made per game is not a shock",
-                                    "Average points made by the team, per season",
-                                    "plot_points_over_years"
+plots <- team_stats_plot_over_years(
+  team_stats_season,
+  average_points,
+  "The average of points made per game is not a shock",
+  "Average points made by the team, per season",
+  "plot_points_over_years"
 )
+
 plot_points_over_years <- plot_points_over_years +
   labs(subtitle = "People make the same amount of two-pointers, and more three-pointers, 
 so it makes sense")
@@ -103,11 +115,15 @@ plot_offreb_over_years <- plot_offreb_over_years+
 to a lot of bigger averages and no real outlier")
 #plot_offreb_over_years
 
-plots <- team_stats_plot_over_years(team_stats_season,average_def_reb,
-                                    "The average of defensive rebounds made per game",
-                                    "Average def reb made by the team, per season",
-                                    "plot_defreb_over_years"
+plots <- team_stats_plot_over_years(
+  team_stats_season,
+  average_def_reb,
+  "The average of defensive rebounds made per game",
+  "Average def reb made by the team, per season",
+  "plot_defreb_over_years"
 )
+
+
 plot_defreb_over_years <- plot_defreb_over_years +
   labs(subtitle = "is odd enough for us to doubt about it")
 #plot_defreb_over_years
@@ -162,29 +178,32 @@ top_winners<-ggplot(top_teams, aes(x = as.factor(year),
 
 
 
-Effect_3Attempts_on_Win <- plot_separated_effect_2016(team_stats_df, 
-                                                      three_attempts, 
-                                                      "Three-point attempts",
-                                                      "A good strategy turned into a bad one?",
-                                                      "Shooting a lot of three-pointer was a good strategy, until it wasn't")+
+Effect_3Attempts_on_Win <- plot_separated_effect_2016(
+  team_stats_df,
+  three_attempts,
+  "Three-point attempts",
+  "A good strategy turned into a bad one?",
+  "Shooting a lot of three-pointer was a good strategy, until it wasn't")+
   coord_cartesian( ylim = c(0.2, 0.8))
 
 #Effect_3Attempts_on_Win
 
-Effect_3Attempts_on_Win_no_distinction <- plot_effect_game(team_stats_df, 
-                                                           three_attempts, 
-                                                           "Three-point attempts",
-                                                           "What's the point?",
-                                                           "Shooting a lot of three-pointer did not mean anything")+
+Effect_3Attempts_on_Win_no_distinction <- plot_effect_game(
+  team_stats_df,
+  three_attempts, 
+  "Three-point attempts",
+  "What's the point?",
+  "Shooting a lot of three-pointer did not mean anything")+
   coord_cartesian( ylim = c(0.2, 0.8))
 
 #Effect_3Attempts_on_Win_no_distinction
 
-Effect_3_made_on_Win_distinction <- plot_separated_effect_2016(team_stats_df, 
-                                                               ThreeS, 
-                                                               "Three-points made",
-                                                               "A three-pointer does not always count the same",
-                                                               "Each team shoots more often behind the three-point line")+
+Effect_3_made_on_Win_distinction <- plot_separated_effect_2016(
+  team_stats_df,
+  ThreeS,
+  "Three-points made",
+  "A three-pointer does not always count the same",
+  "Each team shoots more often behind the three-point line")+
   coord_cartesian( ylim = c(0.1, 0.9))
 
 #Effect_3_made_on_Win_distinction
@@ -225,48 +244,56 @@ But there is always a pretty big chance")+
 
 #Effect_3Attempts_on_Win_last_4_not_desperate
 
-Effect_3accuracy_on_Win <- plot_effect_game(team_stats_df, 
-                                            three_accuracy, 
-                                            "Three-point accuracy",
-                                            "What is the point of shooting it, if you don't make it",
-                                            "At the end, the accuracy seems to be the best factor to estimate chances to win") +
+Effect_3accuracy_on_Win <- plot_effect_game(
+  team_stats_df, 
+  three_accuracy, 
+  "Three-point accuracy",
+  "What is the point of shooting it, if you don't make it",
+  "At the end, the accuracy seems to be the best factor to estimate chances to win") +
   coord_cartesian( xlim= c(0.1,0.6), ylim = c(0, 1))
 
 #Effect_3accuracy_on_Win
 
-Effect_2Attempts_on_Win <- plot_separated_effect_2016(team_stats_df,
-                                                      two_attempts, 
-                                                      "Two-point attempts",
-                                                      "Shooting two-pointers is a better idea",
-                                                      "Perhaps teams who are sure to win shoot more two-pointers")+
+Effect_2Attempts_on_Win <- plot_separated_effect_2016(
+  team_stats_df,
+  two_attempts, 
+  "Two-point attempts",
+  "Shooting two-pointers is a better idea",
+  "Perhaps teams who are sure to win shoot more two-pointers")+
   coord_cartesian(ylim = c(0.2, 0.8))
+
 #Effect_2Attempts_on_Win
 
 
-Effect_2accuracy_on_Win <- plot_effect_game(team_stats_df, 
-                                            two_accuracy, 
-                                            "Two-point accuracy",
-                                            "Shooting two-pointers is a good idea too",
-                                            "At the end, the accuracy seems to be the best factor to estimate chances to win")+
+Effect_2accuracy_on_Win <- plot_effect_game(
+  team_stats_df, 
+  two_accuracy, 
+  "Two-point accuracy",
+  "Shooting two-pointers is a good idea too",
+  "At the end, the accuracy seems to be the best factor to estimate chances to win")+
   coord_cartesian( xlim = c(0.3, 0.75), ylim = c(0,1))
+
 #Effect_2accuracy_on_Win
 
-Effect_2_made_on_Win <- plot_effect_game(team_stats_df, 
-                                         TwoS, 
-                                         "Two-point accuracy",
-                                         "Shooting two-pointers is a good idea too",
-                                         "At the end, the accuracy seems to be the best factor to estimate chances to win")+
+Effect_2_made_on_Win <- plot_effect_game(
+  team_stats_df, 
+  TwoS, 
+  "Two-point accuracy",
+  "Shooting two-pointers is a good idea too",
+  "At the end, the accuracy seems to be the best factor to estimate chances to win")+
   coord_cartesian(ylim = c(0,1))
+
 #Effect_2_made_on_Win
 
 
 #effect of the total of points made or points taken were not that interesting
 
-Effect_Foul_on_Win <- plot_effect_game(team_stats_df, 
-                                       Fouls_commited, 
-                                       "Fouls commited",
-                                       "Fouls are usually a bad idea",
-                                       "after five fouls you would be out and you might give them free-throws")+
+Effect_Foul_on_Win <- plot_effect_game(
+  team_stats_df, 
+  Fouls_commited, 
+  "Fouls commited",
+  "Fouls are usually a bad idea",
+  "after five fouls you would be out and you might give them free-throws")+
   coord_cartesian(ylim = c(0.2, 0.8))
 
 
@@ -360,12 +387,10 @@ points18<- create_team_points_plot(2018)
 points19<- create_team_points_plot(2019)
 points20<- create_team_points_plot(2020)
 
-library(gridExtra)
-
-grid.arrange(points07, points08, points09, points10, ncol = 2)
-grid.arrange(points11, points12, points13, points14, ncol = 2)
-grid.arrange(points15, points16, points17, points18, ncol = 2)
-grid.arrange(points19, points20, ncol = 2)
+#grid.arrange(points07, points08, points09, points10, ncol = 2)
+#grid.arrange(points11, points12, points13, points14, ncol = 2)
+#grid.arrange(points15, points16, points17, points18, ncol = 2)
+#grid.arrange(points19, points20, ncol = 2)
 
 
 
@@ -423,7 +448,9 @@ df <- data.frame(Dataset = c("first part game", "tight game", "non tight game"),
 p2 <- ggplot(data = df, aes(x = Dataset,
                             y = MeanFoulRelativeMinutes, fill = Dataset)) +
   geom_bar(stat = "identity") +
-  labs(title = "Foul per minute", subtitle = "Compare first part of the game(blue) with the last 4 minutes(red)")+
+  labs(title = "Foul per minute",
+       subtitle = 
+         "Compare first part of the game(blue) with the last 4 minutes(red)")+
   scale_fill_manual(values = c("first part game" = "blue",
                                "tight game" = "red",
                                "non tight game" = "lightcoral"),
