@@ -28,18 +28,22 @@ We selected our dataset from Kaggle, a prominent data science competition platfo
 [The dataset](https://www.kaggle.com/datasets/efehandanisman/euroleague-play-by-play-data-20072020/data) in question provides comprehensive play-by-play information for Euroleague and Eurocup basketball games, spanning from 2007 through 2020. Each entry within this dataset encapsulates a specific game event, encompassing details such as the game minute, involved player and his respective team, action type, and whether it entails a two or three-point shot attempt, along with its successful outcome or miss. This dataset serves as a resource for analyzing and understanding the intricacies of Euroleague basketball across the specified time period. This extensive dataset, containing over 1.6 million entries, required thorough wrangling to extract and uncover interesting stories.
 
 As an example, here is the first entry of this dataset.
+
 ```{r}
 #| echo: false 
 head(euroleague, 1)
 ```
+
 Given the wealth of data at our disposal, the process of discerning relevance and assembling pertinent information was essential. We meticulously organized the voluminous play-by-play entries, systematically aggregating them into coherent units of games. Subsequently, these games were further categorized into distinct years or seasons, thereby facilitating the extraction of comprehensive statistical insights related to teams and players. This approach streamlines analysis and allows for a detailed exploration of performance metrics in Euroleague basketball. We created various variables, including game winners, performance in the first 36 minutes or during the last four, and accuracy percentages for data analysis.
 
 After transforming the dataset into stat_per_games, we stumbled upon an outlier.
+
 ```{r}
 #| echo: false
 tail(select(stat_per_games,gamenumber,TeamA,TeamB,
             Tot_Point_A,Tot_Point_B), 1)
 ```
+
 In 2018, one game between two unknowned teams, Media Black Team and Media White Team with a low score of 41-49 significantly affected our analysis, so we removed it as an outlier from stat_per_games. We also renamed many teams, to ensure consistency. We can take the example of Milan, which had for instance the name of EA7 EMPORIO ARMANI MILAN and the name of EA7 EMPORIO ARMANI MILANO in the same year. In some cases, lay-ups and dunks were recorded separately, but to simplify our analysis, we combined them as standard two-point shots since they all contribute two points in basketball. We introduced some variables for code validation purposes and chose to keep them in our dataframes for potential future use by researchers.
 
 Concerning the players' dataframe, we firstly filtered the dataset by removing every entry without player name. We then conducted a data grouping operation by both year and player, resulting in an organized dataset containing aggregate statistics for each player on an annual basis.
@@ -191,7 +195,7 @@ We recognized that numerous factors could influence both the number of three-poi
 
 ### The basket ball after the 2015-2016 NBA season
 
-A question that arose was: why would there be a growing interest in three-pointers if it doesn't seem to increase the chance of winning?  One explanation is that sports analysts might have identified a correlation in the data, which may no longer hold true. To investigate, we split the data before 2016 from the rest.
+A question that arose was: why would there be a growing interest in three-pointers if it doesn't seem to increase the chance of winning? One explanation is that sports analysts might have identified a correlation in the data, which may no longer hold true. To investigate, we split the data before 2016 from the rest.
 
 Teams significantly increased their three-point attempts around 2012, and by 2016, this strategy was firmly established. We chose 2016 as the dividing point due to the remarkable performance of the Golden State Warriors, led by Stephen Curry and Klay Thompson, who shattered the NBA's season wins record in 2015-2016. They were known for their emphasis on three-pointers, symbolizing the dominance of this strategy. However, it's worth noting that no similar dominance symbol was evident in the Euroleague. This division isn't perfect, as the trend of increasing three-point attempts started before 2016 and continued afterward.
 
@@ -202,7 +206,7 @@ Effect_3Attempts_on_Win
 Effect_2Attempts_on_Win
 ```
 
-These results offer valuable insights into the dynamics at play. Before 2016, sports analysts identified a trend in their dataset, prompting an increasing number of teams to adopt a strategy of attempting more three-pointers.  Ironically, this surge in three-point attempts eventually led to it being seen as a less effective strategy. The analysts might not have fully considered that teams attempting more three-pointers were likely more proficient at it, leading to their higher win rates.
+These results offer valuable insights into the dynamics at play. Before 2016, sports analysts identified a trend in their dataset, prompting an increasing number of teams to adopt a strategy of attempting more three-pointers. Ironically, this surge in three-point attempts eventually led to it being seen as a less effective strategy. The analysts might not have fully considered that teams attempting more three-pointers were likely more proficient at it, leading to their higher win rates.
 
 Conversely, the data showed that shooting more two-pointers after 2015 was linked to a higher likelihood of winning. However, understanding this effect is complex and challenging. Our next goal was to gain a deeper understanding of why winning teams tend to emphasize shooting more two-pointers.
 

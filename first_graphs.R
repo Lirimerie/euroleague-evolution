@@ -1,7 +1,7 @@
 #Make a ton of graphs, but many of them were finally not used as
 # the report was already long enough
 source("Function.R")
-library(gridExtra)
+options(warn = -1) #supress messages for the quarto output
 #Statistics per team about three pointers
 
 #this script is where we create all the plot that we wanted
