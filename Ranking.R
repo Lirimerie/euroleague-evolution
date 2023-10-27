@@ -6,7 +6,8 @@ process_team_stats_data <- function(data) {
     # Create a "winner" variable (1 if the team is the winner, 0 otherwise)
     mutate(winner = ifelse(winner == Team, 1, 0)) |>
     mutate(
-      # Create new columns by combining statistics from TeamA and TeamB based on "Team_Type."
+      # Create new columns by combining statistics from TeamA and TeamB
+      # based on "Team_Type."
       Tot_Points = case_when(
         Team_Type == "TeamA" ~ Tot_Point_A,
         Team_Type == "TeamB" ~ Tot_Point_B,
